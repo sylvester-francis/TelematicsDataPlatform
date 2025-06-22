@@ -1,0 +1,281 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsApi/TelematicsApi.csproj": {}
+  },
+  "projects": {
+    "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsApi/TelematicsApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsApi/TelematicsApi.csproj",
+        "projectName": "TelematicsApi",
+        "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsApi/TelematicsApi.csproj",
+        "packagesPath": "/Users/sylvester/.nuget/packages/",
+        "outputPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsApi/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/sylvester/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj": {
+                "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj"
+              },
+              "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/TelematicsData.csproj": {
+                "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/TelematicsData.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.1, )"
+            },
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj",
+        "projectName": "TelematicsCore",
+        "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj",
+        "packagesPath": "/Users/sylvester/.nuget/packages/",
+        "outputPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/sylvester/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Serilog.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/TelematicsData.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/TelematicsData.csproj",
+        "projectName": "TelematicsData",
+        "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/TelematicsData.csproj",
+        "packagesPath": "/Users/sylvester/.nuget/packages/",
+        "outputPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsData/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/sylvester/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj": {
+                "projectPath": "/Users/sylvester/Desktop/Projects/TelematicsDataPlatform/TelematicsCore/TelematicsCore.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
+            "NetTopologySuite": {
+              "target": "Package",
+              "version": "[2.6.0, )"
+            },
+            "NetTopologySuite.IO.GeoJSON": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

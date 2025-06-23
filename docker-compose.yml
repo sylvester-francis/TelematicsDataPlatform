@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  telematics-api:
+    build:
+      context: .
+      dockerfile: TelematicsApi/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=TelematicsDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+    networks:
+      - telematics-network
+
+  batch-processor:
+    build:
+      context: .
+      dockerfile: TelematicsBatchProcessor/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=TelematicsDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+    networks:
+      - telematics-network
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - telematics-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  telematics-network:
+    driver: bridge

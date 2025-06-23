@@ -6,10 +6,10 @@ namespace TelematicsCore.DTOs
     {
         [Required]
         public string VehicleIdentifier { get; set; } = string.Empty;
-
+        
         [Required]
         public DateTime Timestamp { get; set; }
-
+        
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public double? Speed { get; set; }
@@ -23,13 +23,13 @@ namespace TelematicsCore.DTOs
         public string EventType { get; set; } = "POSITION";
         public string? AdditionalData { get; set; }
     }
-
+    
     public class BatchTelematicsEventDto
     {
         [Required]
         public List<TelematicsEventDto> Events { get; set; } = new();
     }
-
+    
     public class VehicleStatsDto
     {
         public string VehicleIdentifier { get; set; } = string.Empty;

@@ -1,0 +1,116 @@
+<div class="vehicle-details-container">
+  <div class="header-section">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Vehicle Details: {{vehicleId}}</h1>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Loading vehicle data...</p>
+  </div>
+
+  <div *ngIf="!loading" class="content-container">
+    <!-- Vehicle Stats Overview -->
+    <mat-card class="stats-overview">
+      <mat-card-header>
+        <mat-card-title>Vehicle Overview</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid" *ngIf="vehicleStats">
+          <div class="stat-item">
+            <div class="stat-value">{{vehicleStats.totalEvents}}</div>
+            <div class="stat-label">Total Events</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{vehicleStats.activeTrips}}</div>
+            <div class="stat-label">Active Trips</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{vehicleStats.totalAlerts}}</div>
+            <div class="stat-label">Alerts</div>
+          </div>
+          <div class="stat-item" *ngIf="vehicleStats.lastKnownSpeed">
+            <div class="stat-value">{{vehicleStats.lastKnownSpeed}} km/h</div>
+            <div class="stat-label">Last Speed</div>
+          </div>
+          <div class="stat-item" *ngIf="vehicleStats.lastEventTime">
+            <div class="stat-value">{{formatDateTime(vehicleStats.lastEventTime)}}</div>
+            <div class="stat-label">Last Activity</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Charts Section -->
+    <mat-tab-group class="charts-section">
+      <mat-tab label="Speed Analysis">
+        <mat-card>
+          <mat-card-content>
+            <div class="chart-container">
+              <canvas 
+                baseChart
+                [data]="speedChartData"
+                [options]="speedChartOptions"
+                type="line">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <mat-tab label="Event Types">
+        <mat-card>
+          <mat-card-content>
+            <div class="chart-container">
+              <canvas 
+                baseChart
+                [data]="eventTypeChartData"
+                [options]="eventTypeChartOptions"
+                type="doughnut">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <mat-tab label="Recent Events">
+        <mat-card>
+          <mat-card-content>
+            <div class="events-list">
+              <div *ngFor="let event of events.slice(0, 10)" class="event-item">
+                <div class="event-info">
+                  <div class="event-type">{{event.eventType}}</div>
+                  <div class="event-time">{{formatDateTime(event.timestamp)}}</div>
+                </div>
+                <div class="event-data">
+                  <span *ngIf="event.speed">Speed: {{event.speed}} km/h</span>
+                  <span *ngIf="event.latitude && event.longitude">
+                    Location: {{event.latitude | number:'1.6-6'}}, {{event.longitude | number:'1.6-6'}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- Location Info -->
+    <mat-card class="location-info" *ngIf="vehicleStats?.lastKnownLatitude && vehicleStats?.lastKnownLongitude">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>location_on</mat-icon>
+          Last Known Location
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          Latitude: {{vehicleStats.lastKnownLatitude | number:'1.6-6'}}<br>
+          Longitude: {{vehicleStats.lastKnownLongitude | number:'1.6-6'}}
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

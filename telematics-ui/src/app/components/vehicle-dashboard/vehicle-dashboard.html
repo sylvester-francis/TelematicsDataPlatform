@@ -1,0 +1,93 @@
+<div class="dashboard-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>Vehicle Dashboard</mat-card-title>
+      <mat-card-subtitle>Monitor your fleet telematics data</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Loading vehicles...</p>
+  </div>
+
+  <mat-card *ngIf="!loading" class="table-card">
+    <mat-card-content>
+      <table mat-table [dataSource]="vehicles" class="vehicles-table">
+        
+        <ng-container matColumnDef="vehicleIdentifier">
+          <th mat-header-cell *matHeaderCellDef>Vehicle ID</th>
+          <td mat-cell *matCellDef="let vehicle">{{vehicle.vehicleIdentifier}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="make">
+          <th mat-header-cell *matHeaderCellDef>Make</th>
+          <td mat-cell *matCellDef="let vehicle">{{vehicle.make}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="model">
+          <th mat-header-cell *matHeaderCellDef>Model</th>
+          <td mat-cell *matCellDef="let vehicle">{{vehicle.model}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="year">
+          <th mat-header-cell *matHeaderCellDef>Year</th>
+          <td mat-cell *matCellDef="let vehicle">{{vehicle.year}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="events">
+          <th mat-header-cell *matHeaderCellDef>Total Events</th>
+          <td mat-cell *matCellDef="let vehicle">
+            {{getStats(vehicle.vehicleIdentifier)?.totalEvents || 0}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastActivity">
+          <th mat-header-cell *matHeaderCellDef>Last Activity</th>
+          <td mat-cell *matCellDef="let vehicle">
+            {{formatDateTime(getStats(vehicle.vehicleIdentifier)?.lastEventTime)}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let vehicle">
+            <button mat-icon-button (click)="viewVehicleDetails(vehicle.vehicleIdentifier)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="stats-grid" *ngIf="!loading && vehicles.length > 0">
+    <mat-card *ngFor="let vehicle of vehicles" class="vehicle-stat-card">
+      <mat-card-header>
+        <mat-card-title>{{vehicle.vehicleIdentifier}}</mat-card-title>
+        <mat-card-subtitle>{{vehicle.make}} {{vehicle.model}} ({{vehicle.year}})</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-item">
+          <span class="stat-label">Events:</span>
+          <span class="stat-value">{{getStats(vehicle.vehicleIdentifier)?.totalEvents || 0}}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Active Trips:</span>
+          <span class="stat-value">{{getStats(vehicle.vehicleIdentifier)?.activeTrips || 0}}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Alerts:</span>
+          <span class="stat-value">{{getStats(vehicle.vehicleIdentifier)?.totalAlerts || 0}}</span>
+        </div>
+        <div class="stat-item" *ngIf="getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed">
+          <span class="stat-label">Last Speed:</span>
+          <span class="stat-value">{{getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed}} km/h</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

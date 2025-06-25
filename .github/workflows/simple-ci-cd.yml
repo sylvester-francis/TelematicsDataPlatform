@@ -31,7 +31,7 @@ jobs:
         dotnet build TelematicsDataPlatform.sln --no-restore --configuration Release
 
     - name: Unit Tests (No Database)
-      run: dotnet test TelematicsTests/TelematicsTests.csproj --filter "Category!=Integration" --no-build --configuration Release
+      run: dotnet test TelematicsTests/TelematicsTests.csproj --filter "FullyQualifiedName!~ApiIntegrationTests" --no-build --configuration Release
 
   # Frontend Tests
   frontend:

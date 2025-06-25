@@ -133,3 +133,22 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Node.js & Angular
+telematics-ui/node_modules/
+telematics-ui/dist/
+telematics-ui/.angular/
+telematics-ui/coverage/
+
+# IDE & Editors
+*.swp
+*.swo
+*~
+
+# Documentation & Linting
+*.markdownlint.json
+.markdownlint-cli2.jsonc
+
+# Cache & Build artifacts
+.cache/
+*.tsbuildinfo

@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  # Full Stack Container (Frontend + Backend in one container)
+  telematics-fullstack:
+    build:
+      context: .
+      dockerfile: Dockerfile.fullstack
+    ports:
+      - "80:80"     # Frontend (nginx)
+      - "5000:5000" # Backend API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=TelematicsDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+    networks:
+      - telematics-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Separate services (alternative deployment option)
   telematics-api:
     build:
       context: .

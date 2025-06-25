@@ -7,17 +7,16 @@
       <p class="page-subtitle">Real-time monitoring and analytics for your entire fleet ecosystem</p>
     </div>
 
-    <!-- Stats Overview -->
-    <div class="stats-overview animate-slide-in-right">
+    <!-- System Metrics from Backend -->
+    <div class="stats-overview animate-slide-in-right" *ngIf="systemMetrics">
       <div class="stat-card">
         <div class="stat-header">
           <div class="stat-icon vehicles">
             <mat-icon>directions_car</mat-icon>
           </div>
-          <div class="stat-trend positive">+12%</div>
         </div>
-        <div class="stat-value">{{vehicles.length}}</div>
-        <div class="stat-label">Active Vehicles</div>
+        <div class="stat-value">{{systemMetrics.totalVehicles}}</div>
+        <div class="stat-label">Total Vehicles</div>
       </div>
       
       <div class="stat-card">
@@ -25,9 +24,8 @@
           <div class="stat-icon events">
             <mat-icon>analytics</mat-icon>
           </div>
-          <div class="stat-trend positive">+8%</div>
         </div>
-        <div class="stat-value">{{getTotalEvents()}}</div>
+        <div class="stat-value">{{systemMetrics.totalEvents}}</div>
         <div class="stat-label">Total Events</div>
       </div>
       
@@ -36,10 +34,19 @@
           <div class="stat-icon alerts">
             <mat-icon>warning</mat-icon>
           </div>
-          <div class="stat-trend neutral">0%</div>
         </div>
-        <div class="stat-value">{{getTotalAlerts()}}</div>
-        <div class="stat-label">Active Alerts</div>
+        <div class="stat-value">{{systemMetrics.totalAlerts}}</div>
+        <div class="stat-label">Total Alerts</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon pending">
+            <mat-icon>schedule</mat-icon>
+          </div>
+        </div>
+        <div class="stat-value">{{systemMetrics.unprocessedEvents}}</div>
+        <div class="stat-label">Unprocessed Events</div>
       </div>
     </div>
 
@@ -98,23 +105,14 @@
             </div>
           </div>
           
-          <div class="action-card">
-            <div class="action-icon export">
-              <mat-icon class="export">file_download</mat-icon>
-            </div>
-            <div class="action-content">
-              <div class="action-title">Export Report</div>
-              <div class="action-description">Download analytics</div>
-            </div>
-          </div>
           
-          <div class="action-card">
-            <div class="action-icon settings">
-              <mat-icon class="settings">settings</mat-icon>
+          <div class="action-card" (click)="checkSystemHealth()">
+            <div class="action-icon health">
+              <mat-icon class="health">health_and_safety</mat-icon>
             </div>
             <div class="action-content">
-              <div class="action-title">Fleet Settings</div>
-              <div class="action-description">Configure parameters</div>
+              <div class="action-title">System Health</div>
+              <div class="action-description">Check API status</div>
             </div>
           </div>
         </div>
@@ -128,16 +126,9 @@
             <p class="section-subtitle">Real-time status and performance metrics</p>
           </div>
           <div class="table-controls">
-            <button mat-button class="control-btn">
-              <mat-icon>filter_list</mat-icon>
-              <span>Filter</span>
-            </button>
-            <button mat-button class="control-btn">
-              <mat-icon>sort</mat-icon>
-              <span>Sort</span>
-            </button>
-            <button mat-icon-button class="control-btn">
-              <mat-icon>more_vert</mat-icon>
+            <button mat-button class="control-btn" (click)="refreshData()">
+              <mat-icon>refresh</mat-icon>
+              <span>Refresh</span>
             </button>
           </div>
         </div>
@@ -145,56 +136,65 @@
         <div class="table-container">
           <table mat-table [dataSource]="vehicles">
             
-            <!-- Status Column -->
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let vehicle" class="status-cell">
-                <div class="status-indicator">
-                  <div class="status-dot"></div>
-                  <span class="status-text">Active</span>
-                </div>
+            <!-- Vehicle ID Column -->
+            <ng-container matColumnDef="vehicleId">
+              <th mat-header-cell *matHeaderCellDef>Vehicle ID</th>
+              <td mat-cell *matCellDef="let vehicle" class="vehicle-id-cell">
+                <div class="vehicle-identifier">{{vehicle.vehicleIdentifier}}</div>
               </td>
             </ng-container>
 
-            <!-- Vehicle Information Column -->
-            <ng-container matColumnDef="vehicle">
-              <th mat-header-cell *matHeaderCellDef>Vehicle Information</th>
+            <!-- Vehicle Info Column -->
+            <ng-container matColumnDef="vehicleInfo">
+              <th mat-header-cell *matHeaderCellDef>Vehicle Details</th>
               <td mat-cell *matCellDef="let vehicle" class="vehicle-cell">
                 <div class="vehicle-info">
-                  <div class="vehicle-id">{{vehicle.vehicleIdentifier}}</div>
-                  <div class="vehicle-details">{{vehicle.make}} {{vehicle.model}} ({{vehicle.year}})</div>
+                  <div class="vehicle-details">{{vehicle.make || 'Unknown'}} {{vehicle.model || 'Model'}} {{vehicle.year || ''}}</div>
+                  <div class="vehicle-created">Added: {{formatDate(vehicle.createdAt)}}</div>
                 </div>
               </td>
             </ng-container>
 
-            <!-- Performance Metrics Column -->
-            <ng-container matColumnDef="metrics">
-              <th mat-header-cell *matHeaderCellDef>Performance Metrics</th>
-              <td mat-cell *matCellDef="let vehicle" class="metrics-cell">
-                <div class="metrics-grid" *ngIf="getStats(vehicle.vehicleIdentifier) as stats">
-                  <div class="metric-item">
-                    <div class="metric-value">{{stats.totalEvents}}</div>
-                    <div class="metric-label">Events</div>
+            <!-- Statistics Column -->
+            <ng-container matColumnDef="stats">
+              <th mat-header-cell *matHeaderCellDef>Statistics</th>
+              <td mat-cell *matCellDef="let vehicle" class="stats-cell">
+                <div class="stats-grid" *ngIf="getStats(vehicle.vehicleIdentifier) as stats; else noStats">
+                  <div class="stat-item">
+                    <span class="stat-label">Events:</span>
+                    <span class="stat-value">{{stats.totalEvents}}</span>
                   </div>
-                  <div class="metric-item">
-                    <div class="metric-value">{{stats.totalAlerts}}</div>
-                    <div class="metric-label">Alerts</div>
+                  <div class="stat-item">
+                    <span class="stat-label">Alerts:</span>
+                    <span class="stat-value">{{stats.totalAlerts}}</span>
                   </div>
-                  <div class="metric-item">
-                    <div class="metric-value">{{stats.lastKnownSpeed || 0}}</div>
-                    <div class="metric-label">Speed</div>
+                  <div class="stat-item">
+                    <span class="stat-label">Trips:</span>
+                    <span class="stat-value">{{stats.activeTrips}}</span>
                   </div>
                 </div>
+                <ng-template #noStats>
+                  <span class="no-data">Loading...</span>
+                </ng-template>
               </td>
             </ng-container>
 
-            <!-- Last Activity Column -->
-            <ng-container matColumnDef="lastActivity">
-              <th mat-header-cell *matHeaderCellDef>Last Activity</th>
-              <td mat-cell *matCellDef="let vehicle">
-                <div *ngIf="getStats(vehicle.vehicleIdentifier) as stats">
-                  {{formatDateTime(stats.lastEventTime)}}
+            <!-- Last Event Column -->
+            <ng-container matColumnDef="lastEvent">
+              <th mat-header-cell *matHeaderCellDef>Last Event</th>
+              <td mat-cell *matCellDef="let vehicle" class="last-event-cell">
+                <div *ngIf="getStats(vehicle.vehicleIdentifier) as stats; else noLastEvent">
+                  <div class="event-time">{{formatDateTime(stats.lastEventTime)}}</div>
+                  <div class="event-location" *ngIf="stats.lastKnownLatitude && stats.lastKnownLongitude">
+                    {{stats.lastKnownLatitude.toFixed(4)}}, {{stats.lastKnownLongitude.toFixed(4)}}
+                  </div>
+                  <div class="event-speed" *ngIf="stats.lastKnownSpeed">
+                    Speed: {{stats.lastKnownSpeed}} km/h
+                  </div>
                 </div>
+                <ng-template #noLastEvent>
+                  <span class="no-data">No events</span>
+                </ng-template>
               </td>
             </ng-container>
 
@@ -208,9 +208,6 @@
                           title="View Details">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button class="action-btn" title="Edit">
-                    <mat-icon>edit</mat-icon>
-                  </button>
                   <button mat-icon-button class="action-btn" title="More Options">
                     <mat-icon>more_vert</mat-icon>
                   </button>
@@ -219,8 +216,8 @@
             </ng-container>
 
             <!-- Table Structure -->
-            <tr mat-header-row *matHeaderRowDef="enhancedDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let vehicle; columns: enhancedDisplayedColumns;"
+            <tr mat-header-row *matHeaderRowDef="backendSupportedColumns"></tr>
+            <tr mat-row *matRowDef="let vehicle; columns: backendSupportedColumns;"
                 (click)="viewVehicleDetails(vehicle.vehicleIdentifier)"
                 style="cursor: pointer;"></tr>
           </table>

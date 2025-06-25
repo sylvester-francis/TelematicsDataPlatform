@@ -4,11 +4,9 @@ export interface Vehicle {
   make: string;
   model: string;
   year: number;
-  vinNumber?: string;
-  licensePlate?: string;
-  isActive?: boolean;
-  registrationDate?: string;
+  vin?: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface VehicleStats {
@@ -31,10 +29,8 @@ export interface TelematicsEvent {
   speed?: number;
   heading?: number;
   altitude?: number;
-  accuracy?: number;
   eventType: string;
-  deviceId?: string;
-  rawData?: string;
+  additionalData?: string;
   isProcessed?: boolean;
 }
 

@@ -2,6 +2,9 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
+// Leaflet Map Styles
+@import 'leaflet/dist/leaflet.css';
+
 // Modern CSS Custom Properties for Professional Theme
 :root {
   // Primary Brand Colors
@@ -370,6 +373,25 @@ body {
     right: var(--space-6) !important;
     width: 56px !important;
     height: 56px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container,
+  .vehicle-details-container,
+  .event-form-container {
+    padding: var(--space-3) !important;
+  }
+  
+  .mat-mdc-card {
+    margin: var(--space-2) !important;
+  }
+  
+  .floating-action {
+    bottom: var(--space-4) !important;
+    right: var(--space-4) !important;
+    width: 48px !important;
+    height: 48px !important;
   }
 }
 

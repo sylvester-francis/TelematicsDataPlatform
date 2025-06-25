@@ -1,6 +1,6 @@
-<div class="premium-vehicle-details">
-  <!-- Hero Header -->
-  <section class="hero-header glass-card animate-fade-in-up">
+<div class="vehicle-details-container">
+  <!-- Header Section -->
+  <section class="vehicle-header glass-card animate-fade-in-up">
     <div class="header-navigation">
       <button mat-icon-button (click)="goBack()" class="back-button">
         <mat-icon>arrow_back</mat-icon>
@@ -12,353 +12,176 @@
       </div>
     </div>
     
-    <div class="vehicle-hero">
-      <div class="vehicle-primary-info">
-        <div class="vehicle-icon animate-float">
-          <mat-icon>directions_car</mat-icon>
-        </div>
-        <div class="vehicle-title">
-          <h1 class="vehicle-name gradient-text">{{vehicleId}}</h1>
-          <p class="vehicle-subtitle">Advanced Telemetry Analytics</p>
-        </div>
+    <div class="vehicle-info">
+      <div class="vehicle-icon">
+        <mat-icon>directions_car</mat-icon>
       </div>
-      
-      <div class="real-time-indicators">
-        <div class="indicator-item">
-          <div class="indicator-dot active animate-pulse"></div>
-          <span class="indicator-label">Live Tracking</span>
-        </div>
-        <div class="indicator-item">
-          <div class="indicator-dot warning"></div>
-          <span class="indicator-label">{{vehicleStats?.totalAlerts || 0}} Alerts</span>
-        </div>
+      <div class="vehicle-details">
+        <h1 class="vehicle-title">{{vehicleId}}</h1>
+        <p class="vehicle-subtitle">Vehicle Telemetry Data</p>
+      </div>
+      <div class="status-indicator">
+        <div class="status-dot active"></div>
+        <span class="status-text">Data Available</span>
       </div>
     </div>
   </section>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="premium-loading">
-    <div class="loading-content glass-card">
-      <div class="loading-animation">
-        <div class="data-points">
-          <div class="point" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
-        </div>
-      </div>
-      <h3 class="loading-title">Analyzing Vehicle Data</h3>
-      <p class="loading-subtitle">Processing telemetry signals and performance metrics...</p>
-    </div>
+  <div *ngIf="loading" class="loading-state animate-fade-in-up">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Vehicle Data</div>
   </div>
 
-  <!-- Main Analytics Dashboard -->
-  <div *ngIf="!loading" class="analytics-dashboard">
+  <!-- Main Content -->
+  <div *ngIf="!loading">
     
-    <!-- Key Performance Metrics -->
-    <section class="kpi-section animate-slide-in-right">
-      <div class="section-header">
-        <h2 class="section-title">Performance Overview</h2>
-        <p class="section-subtitle">Real-time vehicle performance indicators</p>
-      </div>
-      
-      <div class="kpi-grid">
-        <div class="kpi-card glass-card" *ngIf="vehicleStats">
-          <div class="kpi-header">
-            <div class="kpi-icon events">
+    <!-- Statistics Overview -->
+    <section class="stats-section animate-slide-in-right">
+      <h2 class="section-title">Vehicle Statistics</h2>
+      <div class="stats-grid" *ngIf="vehicleStats">
+        
+        <div class="stat-card glass-card">
+          <div class="stat-header">
+            <div class="stat-icon events">
               <mat-icon>analytics</mat-icon>
             </div>
-            <div class="kpi-trend positive">
-              <mat-icon>trending_up</mat-icon>
-              <span>+12%</span>
-            </div>
           </div>
-          <div class="kpi-content">
-            <div class="kpi-value">{{vehicleStats.totalEvents | number}}</div>
-            <div class="kpi-label">Total Events Recorded</div>
-            <div class="kpi-sublabel">Last 30 days</div>
-          </div>
+          <div class="stat-value">{{vehicleStats.totalEvents | number}}</div>
+          <div class="stat-label">Total Events</div>
         </div>
-        
-        <div class="kpi-card glass-card" *ngIf="vehicleStats">
-          <div class="kpi-header">
-            <div class="kpi-icon trips">
+
+        <div class="stat-card glass-card">
+          <div class="stat-header">
+            <div class="stat-icon trips">
               <mat-icon>route</mat-icon>
             </div>
-            <div class="kpi-trend neutral">
-              <mat-icon>trending_flat</mat-icon>
-              <span>+0%</span>
-            </div>
           </div>
-          <div class="kpi-content">
-            <div class="kpi-value">{{vehicleStats.activeTrips | number}}</div>
-            <div class="kpi-label">Active Trips</div>
-            <div class="kpi-sublabel">Currently in progress</div>
-          </div>
+          <div class="stat-value">{{vehicleStats.activeTrips | number}}</div>
+          <div class="stat-label">Active Trips</div>
         </div>
-        
-        <div class="kpi-card glass-card" *ngIf="vehicleStats">
-          <div class="kpi-header">
-            <div class="kpi-icon alerts">
+
+        <div class="stat-card glass-card">
+          <div class="stat-header">
+            <div class="stat-icon alerts">
               <mat-icon>warning</mat-icon>
             </div>
-            <div class="kpi-trend negative">
-              <mat-icon>trending_down</mat-icon>
-              <span>-5%</span>
-            </div>
           </div>
-          <div class="kpi-content">
-            <div class="kpi-value">{{vehicleStats.totalAlerts | number}}</div>
-            <div class="kpi-label">System Alerts</div>
-            <div class="kpi-sublabel">Requires attention</div>
-          </div>
+          <div class="stat-value">{{vehicleStats.totalAlerts | number}}</div>
+          <div class="stat-label">System Alerts</div>
         </div>
-        
-        <div class="kpi-card glass-card" *ngIf="vehicleStats?.lastKnownSpeed">
-          <div class="kpi-header">
-            <div class="kpi-icon speed">
+
+        <div class="stat-card glass-card" *ngIf="vehicleStats.lastKnownSpeed !== null">
+          <div class="stat-header">
+            <div class="stat-icon speed">
               <mat-icon>speed</mat-icon>
             </div>
-            <div class="kpi-trend positive">
-              <mat-icon>trending_up</mat-icon>
-              <span>+8%</span>
-            </div>
           </div>
-          <div class="kpi-content">
-            <div class="kpi-value">{{vehicleStats?.lastKnownSpeed}}</div>
-            <div class="kpi-label">Current Speed (km/h)</div>
-            <div class="kpi-sublabel">Real-time reading</div>
-          </div>
+          <div class="stat-value">{{vehicleStats.lastKnownSpeed | number:'1.1-1'}} km/h</div>
+          <div class="stat-label">Last Known Speed</div>
         </div>
+
       </div>
     </section>
 
-    <!-- Advanced Analytics Section -->
-    <section class="analytics-section animate-fade-in-up">
-      <div class="analytics-container">
-        <div class="analytics-header">
-          <h2 class="section-title gradient-text">Advanced Analytics</h2>
-          <div class="analytics-controls">
-            <button mat-button class="time-filter active">24H</button>
-            <button mat-button class="time-filter">7D</button>
-            <button mat-button class="time-filter">30D</button>
-            <button mat-icon-button class="export-btn" title="Export Data">
-              <mat-icon>file_download</mat-icon>
-            </button>
-          </div>
-        </div>
-        
-        <div class="charts-grid">
-          
-          <!-- Speed Analytics Chart -->
-          <div class="chart-card glass-card">
-            <div class="chart-header">
-              <div class="chart-title-section">
-                <h3 class="chart-title">Speed Analysis</h3>
-                <p class="chart-subtitle">Vehicle speed patterns over time</p>
-              </div>
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <div class="legend-dot speed"></div>
-                  <span>Speed (km/h)</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot limit"></div>
-                  <span>Speed Limit</span>
-                </div>
-              </div>
-            </div>
-            <div class="chart-container">
-              <canvas 
-                baseChart
-                [data]="speedChartData"
-                [options]="speedChartOptions"
-                type="line">
-              </canvas>
-            </div>
-            <div class="chart-insights">
-              <div class="insight-item">
-                <span class="insight-label">Avg Speed:</span>
-                <span class="insight-value">65 km/h</span>
-              </div>
-              <div class="insight-item">
-                <span class="insight-label">Max Speed:</span>
-                <span class="insight-value">95 km/h</span>
-              </div>
-              <div class="insight-item">
-                <span class="insight-label">Violations:</span>
-                <span class="insight-value warning">3</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Event Distribution Chart -->
-          <div class="chart-card glass-card">
-            <div class="chart-header">
-              <div class="chart-title-section">
-                <h3 class="chart-title">Event Distribution</h3>
-                <p class="chart-subtitle">Breakdown of telemetry event types</p>
-              </div>
-              <div class="chart-actions">
-                <button mat-icon-button class="chart-action" title="View Details">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button mat-icon-button class="chart-action" title="Export">
-                  <mat-icon>share</mat-icon>
-                </button>
-              </div>
-            </div>
-            <div class="chart-container doughnut">
-              <canvas 
-                baseChart
-                [data]="eventTypeChartData"
-                [options]="eventTypeChartOptions"
-                type="doughnut">
-              </canvas>
-              <div class="chart-center-info">
-                <div class="center-value">{{events.length}}</div>
-                <div class="center-label">Total Events</div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-    </section>
-
-    <!-- Real-time Events Feed -->
-    <section class="events-section animate-fade-in-up">
-      <div class="events-container glass-card">
-        <div class="events-header">
-          <div class="header-content">
-            <h3 class="events-title">Live Event Stream</h3>
-            <p class="events-subtitle">Real-time telemetry events and system notifications</p>
-          </div>
-          <div class="events-controls">
-            <button mat-button class="filter-btn">
-              <mat-icon>filter_list</mat-icon>
-              <span>Filter</span>
-            </button>
-            <button mat-icon-button class="refresh-btn" title="Refresh">
-              <mat-icon>refresh</mat-icon>
-            </button>
-          </div>
-        </div>
-        
-        <div class="events-timeline">
-          <div *ngFor="let event of events.slice(0, 15); let i = index" 
-               class="timeline-item animate-slide-in-right"
-               [style.animation-delay.ms]="i * 50">
-            
-            <div class="timeline-marker">
-              <div class="marker-dot" [class]="getEventTypeClass(event.eventType)"></div>
-              <div class="marker-line" *ngIf="i < events.slice(0, 15).length - 1"></div>
-            </div>
-            
-            <div class="timeline-content">
-              <div class="event-header">
-                <div class="event-type-badge" [class]="getEventTypeClass(event.eventType)">
-                  <mat-icon>{{getEventIcon(event.eventType)}}</mat-icon>
-                  <span>{{event.eventType.replace('_', ' ')}}</span>
-                </div>
-                <div class="event-time">{{formatDateTime(event.timestamp)}}</div>
-              </div>
-              
-              <div class="event-details">
-                <div class="detail-grid">
-                  <div class="detail-item" *ngIf="event.speed">
-                    <span class="detail-label">Speed:</span>
-                    <span class="detail-value">{{event.speed}} km/h</span>
-                  </div>
-                  <div class="detail-item" *ngIf="event.heading">
-                    <span class="detail-label">Heading:</span>
-                    <span class="detail-value">{{event.heading}}°</span>
-                  </div>
-                  <div class="detail-item" *ngIf="event.latitude && event.longitude">
-                    <span class="detail-label">Location:</span>
-                    <span class="detail-value location">{{event.latitude | number:'1.4-4'}}, {{event.longitude | number:'1.4-4'}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="timeline-end">
-            <div class="end-marker">
-              <mat-icon>more_horiz</mat-icon>
-            </div>
-            <p class="end-text">Showing latest 15 events</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Location Intelligence -->
+    <!-- Location Information with Map -->
     <section class="location-section animate-fade-in-up" *ngIf="vehicleStats?.lastKnownLatitude && vehicleStats?.lastKnownLongitude">
-      <div class="location-container glass-card">
+      <h2 class="section-title">Last Known Location</h2>
+      
+      <!-- Location Details Card -->
+      <div class="location-card glass-card">
         <div class="location-header">
-          <div class="header-icon">
+          <div class="location-icon">
             <mat-icon>location_on</mat-icon>
           </div>
-          <div class="header-content">
-            <h3 class="location-title">Location Intelligence</h3>
-            <p class="location-subtitle">Current position and geospatial analytics</p>
-          </div>
-          <div class="location-status">
-            <div class="status-indicator active">
-              <div class="status-dot"></div>
-              <span>GPS Active</span>
+          <div class="location-info">
+            <div class="location-coords">
+              <span class="coord-label">Latitude:</span>
+              <span class="coord-value">{{vehicleStats?.lastKnownLatitude | number:'1.6-6'}}</span>
+            </div>
+            <div class="location-coords">
+              <span class="coord-label">Longitude:</span>
+              <span class="coord-value">{{vehicleStats?.lastKnownLongitude | number:'1.6-6'}}</span>
             </div>
           </div>
         </div>
-        
-        <div class="location-content">
-          <div class="coordinates-grid">
-            <div class="coordinate-item">
-              <div class="coordinate-label">Latitude</div>
-              <div class="coordinate-value">{{vehicleStats?.lastKnownLatitude | number:'1.6-6'}}</div>
-            </div>
-            <div class="coordinate-item">
-              <div class="coordinate-label">Longitude</div>
-              <div class="coordinate-value">{{vehicleStats?.lastKnownLongitude | number:'1.6-6'}}</div>
-            </div>
-            <div class="coordinate-item">
-              <div class="coordinate-label">Last Update</div>
-              <div class="coordinate-value">{{formatDateTime(vehicleStats?.lastEventTime)}}</div>
-            </div>
-            <div class="coordinate-item">
-              <div class="coordinate-label">Accuracy</div>
-              <div class="coordinate-value">±3.2m</div>
-            </div>
+        <div class="location-time" *ngIf="vehicleStats?.lastEventTime">
+          <mat-icon>schedule</mat-icon>
+          <span>Last updated: {{formatDateTime(vehicleStats?.lastEventTime)}}</span>
+        </div>
+      </div>
+
+      <!-- Interactive Map -->
+      <div class="map-card glass-card">
+        <div class="map-header">
+          <div class="map-title">
+            <mat-icon>map</mat-icon>
+            <span>Vehicle Location Map</span>
           </div>
-          
-          <div class="location-actions">
-            <button mat-button class="location-btn">
-              <mat-icon>map</mat-icon>
-              <span>View on Map</span>
-            </button>
-            <button mat-button class="location-btn">
-              <mat-icon>near_me</mat-icon>
-              <span>Track Live</span>
-            </button>
-            <button mat-button class="location-btn">
-              <mat-icon>history</mat-icon>
-              <span>Location History</span>
-            </button>
+        </div>
+        <div class="map-container" #mapContainer></div>
+      </div>
+    </section>
+
+    <!-- Recent Events -->
+    <section class="events-section animate-fade-in-up">
+      <div class="section-header">
+        <h2 class="section-title">Recent Telemetry Events</h2>
+        <div class="section-actions">
+          <button mat-button (click)="loadVehicleEvents()" class="refresh-btn">
+            <mat-icon>refresh</mat-icon>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Events Loading -->
+      <div *ngIf="eventsLoading" class="events-loading">
+        <div class="loading-spinner small"></div>
+        <span>Loading events...</span>
+      </div>
+
+      <!-- Events List -->
+      <div *ngIf="!eventsLoading && events.length > 0" class="events-list-container">
+        <div class="events-list">
+          <div *ngFor="let event of events" class="event-item glass-card">
+            <div class="event-header">
+              <span class="event-type-badge" [ngClass]="getEventTypeClass(event.eventType)">
+                {{event.eventType}}
+              </span>
+              <span class="event-timestamp">{{formatDateTime(event.timestamp)}}</span>
+            </div>
+            <div class="event-details">
+              <div class="event-detail" *ngIf="event.speed !== null">
+                <span class="detail-label">Speed:</span>
+                <span class="detail-value">{{event.speed | number:'1.1-1'}} km/h</span>
+              </div>
+              <div class="event-detail" *ngIf="event.latitude && event.longitude">
+                <span class="detail-label">Location:</span>
+                <span class="detail-value coordinates">{{event.latitude | number:'1.4-4'}}, {{event.longitude | number:'1.4-4'}}</span>
+              </div>
+              <div class="event-detail">
+                <span class="detail-label">Status:</span>
+                <span class="status-badge" [ngClass]="event.isProcessed ? 'processed' : 'pending'">
+                  {{event.isProcessed ? 'Processed' : 'Pending'}}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- No Events -->
+      <div *ngIf="!eventsLoading && events.length === 0" class="no-events">
+        <div class="no-events-icon">
+          <mat-icon>event_note</mat-icon>
+        </div>
+        <h3>No Events Found</h3>
+        <p>No telemetry events have been recorded for this vehicle yet.</p>
+      </div>
+
     </section>
-    
+
   </div>
 
-  <!-- Floating Quick Actions -->
-  <div class="floating-actions">
-    <button mat-mini-fab class="quick-action primary" title="Real-time Tracking">
-      <mat-icon>gps_fixed</mat-icon>
-    </button>
-    <button mat-mini-fab class="quick-action secondary" title="Generate Report">
-      <mat-icon>assessment</mat-icon>
-    </button>
-    <button mat-mini-fab class="quick-action tertiary" title="Settings">
-      <mat-icon>settings</mat-icon>
-    </button>
-  </div>
 </div>

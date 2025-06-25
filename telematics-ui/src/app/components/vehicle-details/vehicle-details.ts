@@ -1,167 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BaseChartDirective } from 'ng2-charts';
-import { Chart, ChartConfiguration, ChartData, ChartType, registerables } from 'chart.js';
+import { firstValueFrom } from 'rxjs';
+import * as L from 'leaflet';
 import { VehicleService } from '../../services/vehicle.service';
-import { Vehicle, VehicleStats, TelematicsEvent } from '../../models/vehicle.model';
-
-Chart.register(...registerables);
+import { VehicleStats, TelematicsEvent } from '../../models/vehicle.model';
 
 @Component({
   selector: 'app-vehicle-details',
+  standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    MatTabsModule,
-    MatProgressSpinnerModule,
-    BaseChartDirective
+    MatIconModule
   ],
   templateUrl: './vehicle-details.html',
   styleUrl: './vehicle-details.scss'
 })
-export class VehicleDetails implements OnInit {
-  vehicleId!: string;
-  vehicle: Vehicle | null = null;
+export class VehicleDetails implements OnInit, AfterViewInit {
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
+  
+  vehicleId: string = '';
   vehicleStats: VehicleStats | null = null;
   events: TelematicsEvent[] = [];
   loading = true;
+  eventsLoading = false;
+  
+  private map: L.Map | null = null;
+  private vehicleMarker: L.Marker | null = null;
 
-  // Chart configurations
-  speedChartData: ChartData<'line'> = {
-    labels: [],
-    datasets: [{
-      label: 'Speed (km/h)',
-      data: [],
-      borderColor: '#3f51b5',
-      backgroundColor: 'rgba(63, 81, 181, 0.1)',
-      tension: 0.1
-    }]
-  };
-
-  speedChartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top'
-      },
-      title: {
-        display: true,
-        text: 'Speed Over Time',
-        font: {
-          size: 16,
-          weight: 'bold'
-        }
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: 'white',
-        bodyColor: 'white',
-        borderColor: '#667eea',
-        borderWidth: 1
-      }
-    },
-    scales: {
-      x: {
-        display: true,
-        title: {
-          display: true,
-          text: 'Time',
-          font: {
-            weight: 'bold'
-          }
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)'
-        }
-      },
-      y: {
-        display: true,
-        title: {
-          display: true,
-          text: 'Speed (km/h)',
-          font: {
-            weight: 'bold'
-          }
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.1)'
-        },
-        beginAtZero: true
-      }
-    },
-    animation: {
-      duration: 1000,
-      easing: 'easeInOutQuart'
-    }
-  };
-
-  eventTypeChartData: ChartData<'doughnut'> = {
-    labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        '#FFCE56',
-        '#4BC0C0',
-        '#9966FF',
-        '#FF9F40'
-      ]
-    }]
-  };
-
-  eventTypeChartOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'right',
-        labels: {
-          padding: 20,
-          usePointStyle: true,
-          font: {
-            size: 12
-          }
-        }
-      },
-      title: {
-        display: true,
-        text: 'Event Types Distribution',
-        font: {
-          size: 16,
-          weight: 'bold'
-        },
-        padding: 20
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: 'white',
-        bodyColor: 'white',
-        borderColor: '#667eea',
-        borderWidth: 1,
-        callbacks: {
-          label: function(context) {
-            const total = context.dataset.data.reduce((a: any, b: any) => a + b, 0);
-            const percentage = ((context.parsed / total) * 100).toFixed(1);
-            return `${context.label}: ${context.parsed} (${percentage}%)`;
-          }
-        }
-      }
-    },
-    animation: {
-      duration: 1500
-    }
-  };
 
   constructor(
     private route: ActivatedRoute,
@@ -170,135 +41,169 @@ export class VehicleDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.vehicleId = this.route.snapshot.paramMap.get('id') || '';
-    if (this.vehicleId) {
-      this.loadVehicleData();
+    this.vehicleId = this.route.snapshot.params['id'];
+    this.loadVehicleData();
+  }
+
+  ngAfterViewInit(): void {
+    // Initialize map after view is ready
+    if (this.vehicleStats?.lastKnownLatitude && this.vehicleStats?.lastKnownLongitude) {
+      this.initializeMap();
     }
   }
 
-  loadVehicleData(): void {
-    this.loading = true;
+  async loadVehicleData(): Promise<void> {
+    try {
+      this.loading = true;
+      
+      // Load vehicle statistics
+      const stats = await firstValueFrom(this.vehicleService.getVehicleStats(this.vehicleId));
+      this.vehicleStats = stats || null;
+      
+      // Load vehicle events
+      await this.loadVehicleEvents();
+      
+      // Initialize map after data is loaded
+      setTimeout(() => {
+        if (this.vehicleStats?.lastKnownLatitude && this.vehicleStats?.lastKnownLongitude) {
+          this.initializeMap();
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error loading vehicle data:', error);
+      this.vehicleStats = null;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async loadVehicleEvents(): Promise<void> {
+    try {
+      this.eventsLoading = true;
+      const events = await firstValueFrom(this.vehicleService.getVehicleEvents(this.vehicleId));
+      this.events = events || [];
+    } catch (error) {
+      console.error('Error loading vehicle events:', error);
+      this.events = [];
+    } finally {
+      this.eventsLoading = false;
+    }
+  }
+
+  formatDateTime(dateTime: string | undefined): string {
+    if (!dateTime) return '-';
     
-    // Load vehicle stats
-    this.vehicleService.getVehicleStats(this.vehicleId).subscribe({
-      next: (stats) => {
-        this.vehicleStats = stats;
-      },
-      error: (error) => {
-        console.error('Error loading vehicle stats:', error);
-      }
-    });
-
-    // Load vehicle events for the last 30 days
-    const endTime = new Date();
-    const startTime = new Date();
-    startTime.setDate(startTime.getDate() - 30);
-
-    this.vehicleService.getVehicleEvents(
-      this.vehicleId, 
-      startTime.toISOString(), 
-      endTime.toISOString()
-    ).subscribe({
-      next: (events) => {
-        this.events = events;
-        this.updateCharts();
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading vehicle events:', error);
-        this.loading = false;
-      }
-    });
+    try {
+      const date = new Date(dateTime);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    } catch {
+      return '-';
+    }
   }
 
-  updateCharts(): void {
-    this.updateSpeedChart();
-    this.updateEventTypeChart();
-  }
-
-  updateSpeedChart(): void {
-    const speedEvents = this.events.filter(e => e.speed !== null && e.speed !== undefined);
-    const last24Hours = speedEvents.slice(-24); // Last 24 events for speed chart
-
-    this.speedChartData = {
-      labels: last24Hours.map(e => new Date(e.timestamp).toLocaleTimeString()),
-      datasets: [{
-        label: 'Speed (km/h)',
-        data: last24Hours.map(e => e.speed || 0),
-        borderColor: '#667eea',
-        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-        pointBackgroundColor: '#667eea',
-        pointBorderColor: '#ffffff',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        fill: true,
-        tension: 0.4
-      }]
-    };
-  }
-
-  updateEventTypeChart(): void {
-    const eventTypeCounts: { [key: string]: number } = {};
-    
-    this.events.forEach(event => {
-      eventTypeCounts[event.eventType] = (eventTypeCounts[event.eventType] || 0) + 1;
-    });
-
-    this.eventTypeChartData = {
-      labels: Object.keys(eventTypeCounts),
-      datasets: [{
-        data: Object.values(eventTypeCounts),
-        backgroundColor: [
-          '#667eea',
-          '#764ba2',
-          '#f093fb',
-          '#f5576c',
-          '#4facfe',
-          '#00f2fe',
-          '#43e97b',
-          '#38f9d7',
-          '#ffecd2',
-          '#fcb69f'
-        ],
-        borderWidth: 2,
-        borderColor: '#ffffff',
-        hoverBorderWidth: 3,
-        hoverBorderColor: '#333333'
-      }]
-    };
+  getEventTypeClass(eventType: string): string {
+    switch (eventType?.toLowerCase()) {
+      case 'position':
+        return 'position';
+      case 'ignition_on':
+        return 'ignition-on';
+      case 'ignition_off':
+        return 'ignition-off';
+      case 'speeding':
+        return 'speeding';
+      case 'harsh_braking':
+        return 'harsh-braking';
+      case 'harsh_acceleration':
+        return 'harsh-acceleration';
+      default:
+        return 'default';
+    }
   }
 
   goBack(): void {
     this.router.navigate(['/dashboard']);
   }
 
-  formatDateTime(dateString?: string): string {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString() + ' ' + new Date(dateString).toLocaleTimeString();
+  private initializeMap(): void {
+    if (!this.vehicleStats?.lastKnownLatitude || !this.vehicleStats?.lastKnownLongitude) {
+      return;
+    }
+
+    const lat = this.vehicleStats.lastKnownLatitude;
+    const lng = this.vehicleStats.lastKnownLongitude;
+
+    // Create map if it doesn't exist
+    if (!this.map && this.mapContainer) {
+      this.map = L.map(this.mapContainer.nativeElement, {
+        center: [lat, lng],
+        zoom: 15,
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(this.map);
+
+      // Fix for Leaflet default marker icons
+      this.fixLeafletIcons();
+    }
+
+    // Add or update vehicle marker
+    if (this.map) {
+      if (this.vehicleMarker) {
+        this.vehicleMarker.remove();
+      }
+
+      // Create custom vehicle icon
+      const vehicleIcon = L.divIcon({
+        html: `
+          <div class="vehicle-marker">
+            <div class="marker-icon">🚗</div>
+            <div class="marker-pulse"></div>
+          </div>
+        `,
+        className: 'custom-vehicle-marker',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+
+      // Add marker with popup
+      this.vehicleMarker = L.marker([lat, lng], { icon: vehicleIcon })
+        .addTo(this.map)
+        .bindPopup(`
+          <div class="vehicle-popup">
+            <h4>${this.vehicleId}</h4>
+            <p><strong>Last Known Position</strong></p>
+            <p>Lat: ${lat.toFixed(6)}</p>
+            <p>Lng: ${lng.toFixed(6)}</p>
+            ${this.vehicleStats?.lastKnownSpeed ? `<p>Speed: ${this.vehicleStats.lastKnownSpeed} km/h</p>` : ''}
+            ${this.vehicleStats?.lastEventTime ? `<p>Updated: ${this.formatDateTime(this.vehicleStats.lastEventTime)}</p>` : ''}
+          </div>
+        `);
+
+      // Center map on vehicle location
+      this.map.setView([lat, lng], 15);
+    }
   }
 
-  getEventTypeClass(eventType: string): string {
-    const typeMap: { [key: string]: string } = {
-      'POSITION': 'position',
-      'IGNITION_ON': 'ignition-on',
-      'IGNITION_OFF': 'ignition-off',
-      'SPEEDING': 'speeding',
-      'HARSH_BRAKING': 'harsh-braking',
-      'HARSH_ACCELERATION': 'harsh-acceleration'
-    };
-    return typeMap[eventType] || 'default';
-  }
-
-  getEventIcon(eventType: string): string {
-    const iconMap: { [key: string]: string } = {
-      'POSITION': 'location_on',
-      'IGNITION_ON': 'power_settings_new',
-      'IGNITION_OFF': 'power_off',
-      'SPEEDING': 'speed',
-      'HARSH_BRAKING': 'warning',
-      'HARSH_ACCELERATION': 'trending_up'
-    };
-    return iconMap[eventType] || 'info';
+  private fixLeafletIcons(): void {
+    // Fix for Leaflet default marker icons in Angular
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    });
   }
 }

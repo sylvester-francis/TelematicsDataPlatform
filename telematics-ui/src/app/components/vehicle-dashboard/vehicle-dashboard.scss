@@ -38,18 +38,28 @@
   .page-subtitle {
     font-size: 1.125rem;
     color: #64748b;
-    margin: 0;
-    max-width: 600px;
     margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.6;
+    
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      padding: 0 1rem;
+    }
   }
 }
 
 // Stats Overview Cards
 .stats-overview {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2.5rem;
+  
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
   
   .stat-card {
     background: rgba(255, 255, 255, 0.9);
@@ -233,8 +243,12 @@
   
   .actions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+    
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
     
     .action-card {
       background: rgba(255, 255, 255, 0.8);
@@ -353,11 +367,17 @@
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1rem;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    
+    @media (max-width: 768px) {
+      border-radius: 0.5rem;
+    }
     
     .mat-mdc-table {
       width: 100%;
+      min-width: 600px;
       background: transparent !important;
       
       .mat-mdc-header-row {
@@ -429,6 +449,11 @@
             .metrics-grid {
               display: flex;
               gap: 1rem;
+              flex-wrap: wrap;
+              
+              @media (max-width: 768px) {
+                gap: 0.5rem;
+              }
               
               .metric-item {
                 text-align: center;

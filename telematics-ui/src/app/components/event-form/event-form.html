@@ -1,146 +1,233 @@
 <div class="event-form-container">
-  <mat-card class="form-card">
-    <mat-card-header>
-      <mat-card-title>Submit Telematics Event</mat-card-title>
-      <mat-card-subtitle>Add new vehicle event data to the system</mat-card-subtitle>
-    </mat-card-header>
+  <div class="form-card glass-card">
+    <div class="card-header">
+      <h1 class="form-title">Submit Telematics Event</h1>
+      <p class="form-subtitle">Add telemetry data for fleet vehicles</p>
+    </div>
     
-    <mat-card-content>
-      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+      
+      <!-- Required Fields -->
+      <div class="form-section">
+        <h3 class="section-title">Required Information</h3>
         
-        <!-- Vehicle Information -->
-        <div class="form-section">
-          <h3 class="section-title">Vehicle Information</h3>
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Vehicle Identifier</mat-label>
-              <input matInput formControlName="vehicleIdentifier" placeholder="e.g., DEMO-001">
-              <mat-error *ngIf="eventForm.get('vehicleIdentifier')?.hasError('required')">
-                Vehicle identifier is required
-              </mat-error>
-            </mat-form-field>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Vehicle Identifier *</label>
+            <input 
+              type="text" 
+              formControlName="vehicleIdentifier" 
+              class="form-input"
+              placeholder="e.g., FLEET-001"
+              [class.error]="isFieldInvalid('vehicleIdentifier')">
+            <div *ngIf="isFieldInvalid('vehicleIdentifier')" class="error-message">
+              Vehicle identifier is required
+            </div>
           </div>
         </div>
-
-        <!-- Event Details -->
-        <div class="form-section">
-          <h3 class="section-title">Event Details</h3>
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Event Type</mat-label>
-              <mat-select formControlName="eventType">
-                <mat-option *ngFor="let type of eventTypes" [value]="type">
-                  {{type}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Timestamp</mat-label>
-              <input matInput type="datetime-local" formControlName="timestamp">
-            </mat-form-field>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Timestamp *</label>
+            <input 
+              type="datetime-local" 
+              formControlName="timestamp" 
+              class="form-input"
+              [class.error]="isFieldInvalid('timestamp')">
+            <div *ngIf="isFieldInvalid('timestamp')" class="error-message">
+              Timestamp is required
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Location Data -->
-        <div class="form-section">
-          <h3 class="section-title">Location Data</h3>
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Latitude</mat-label>
-              <input matInput type="number" step="any" formControlName="latitude" placeholder="40.7128">
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Longitude</mat-label>
-              <input matInput type="number" step="any" formControlName="longitude" placeholder="-74.0060">
-            </mat-form-field>
+      <!-- Optional Location Data -->
+      <div class="form-section">
+        <h3 class="section-title">Location Data (Optional)</h3>
+        
+        <div class="form-row">
+          <div class="form-field half-width">
+            <label class="field-label">Latitude</label>
+            <input 
+              type="number" 
+              step="any" 
+              formControlName="latitude" 
+              class="form-input"
+              placeholder="40.7128">
           </div>
           
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Speed (km/h)</mat-label>
-              <input matInput type="number" formControlName="speed" placeholder="65">
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Heading (°)</mat-label>
-              <input matInput type="number" formControlName="heading" placeholder="45">
-            </mat-form-field>
-          </div>
-          
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Altitude (m)</mat-label>
-              <input matInput type="number" formControlName="altitude" placeholder="100">
-            </mat-form-field>
+          <div class="form-field half-width">
+            <label class="field-label">Longitude</label>
+            <input 
+              type="number" 
+              step="any" 
+              formControlName="longitude" 
+              class="form-input"
+              placeholder="-74.0060">
           </div>
         </div>
-
-        <!-- Vehicle Diagnostics -->
-        <div class="form-section">
-          <h3 class="section-title">Vehicle Diagnostics</h3>
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Odometer (km)</mat-label>
-              <input matInput type="number" formControlName="odometer" placeholder="125000">
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Fuel Level (%)</mat-label>
-              <input matInput type="number" formControlName="fuelLevel" placeholder="75">
-            </mat-form-field>
+        
+        <div class="form-row">
+          <div class="form-field half-width">
+            <label class="field-label">Speed (km/h)</label>
+            <input 
+              type="number" 
+              formControlName="speed" 
+              class="form-input"
+              placeholder="65">
           </div>
           
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Engine Load (%)</mat-label>
-              <input matInput type="number" formControlName="engineLoad" placeholder="45">
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Engine RPM</mat-label>
-              <input matInput type="number" formControlName="engineRPM" placeholder="2500">
-            </mat-form-field>
+          <div class="form-field half-width">
+            <label class="field-label">Heading (degrees)</label>
+            <input 
+              type="number" 
+              formControlName="heading" 
+              class="form-input"
+              placeholder="90">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Altitude (meters)</label>
+            <input 
+              type="number" 
+              formControlName="altitude" 
+              class="form-input"
+              placeholder="100">
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional Vehicle Diagnostics -->
+      <div class="form-section">
+        <h3 class="section-title">Vehicle Diagnostics (Optional)</h3>
+        
+        <div class="form-row">
+          <div class="form-field half-width">
+            <label class="field-label">Odometer (km)</label>
+            <input 
+              type="number" 
+              formControlName="odometer" 
+              class="form-input"
+              placeholder="125000">
           </div>
           
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Engine Coolant Temperature (°C)</mat-label>
-              <input matInput type="number" formControlName="engineCoolantTemperature" placeholder="85">
-            </mat-form-field>
+          <div class="form-field half-width">
+            <label class="field-label">Fuel Level (%)</label>
+            <input 
+              type="number" 
+              formControlName="fuelLevel" 
+              class="form-input"
+              placeholder="75">
           </div>
         </div>
-
-        <!-- Additional Data -->
-        <div class="form-section">
-          <h3 class="section-title">Additional Information</h3>
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Additional Data (JSON)</mat-label>
-              <textarea matInput rows="4" formControlName="additionalData" 
-                        placeholder='{"customField": "value"}'></textarea>
-            </mat-form-field>
+        
+        <div class="form-row">
+          <div class="form-field half-width">
+            <label class="field-label">Engine Load (%)</label>
+            <input 
+              type="number" 
+              formControlName="engineLoad" 
+              class="form-input"
+              placeholder="45">
+          </div>
+          
+          <div class="form-field half-width">
+            <label class="field-label">Engine RPM</label>
+            <input 
+              type="number" 
+              formControlName="engineRPM" 
+              class="form-input"
+              placeholder="2500">
           </div>
         </div>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Engine Coolant Temperature (°C)</label>
+            <input 
+              type="number" 
+              formControlName="engineCoolantTemperature" 
+              class="form-input"
+              placeholder="85">
+          </div>
+        </div>
+      </div>
 
-        <!-- Form Actions -->
-        <div class="form-actions">
-          <button mat-raised-button type="button" color="accent" (click)="fillSampleData()" class="sample-btn">
-            Fill Sample Data
+      <!-- Optional Event Details -->
+      <div class="form-section">
+        <h3 class="section-title">Event Details (Optional)</h3>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Event Type</label>
+            <select formControlName="eventType" class="form-select">
+              <option value="POSITION">POSITION</option>
+              <option value="IGNITION_ON">IGNITION_ON</option>
+              <option value="IGNITION_OFF">IGNITION_OFF</option>
+              <option value="SPEEDING">SPEEDING</option>
+              <option value="HARSH_BRAKING">HARSH_BRAKING</option>
+              <option value="HARSH_ACCELERATION">HARSH_ACCELERATION</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label">Additional Data (JSON)</label>
+            <textarea 
+              formControlName="additionalData" 
+              class="form-textarea"
+              rows="4"
+              placeholder='{"customField": "value"}'></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          (click)="fillSampleData()" 
+          class="btn btn-secondary">
+          Fill Sample Data
+        </button>
+        
+        <div class="action-buttons">
+          <button 
+            type="button" 
+            (click)="resetForm()" 
+            class="btn btn-outline">
+            Reset Form
           </button>
-          
-          <div class="action-buttons">
-            <button mat-raised-button type="button" (click)="eventForm.reset()" class="reset-btn">
-              Reset Form
-            </button>
-            <button mat-raised-button type="submit" color="primary" [disabled]="!eventForm.valid" class="submit-btn">
-              Submit Event
-            </button>
-          </div>
+          <button 
+            type="submit" 
+            [disabled]="!eventForm.valid || isSubmitting" 
+            class="btn btn-primary">
+            <span *ngIf="!isSubmitting">Submit Event</span>
+            <span *ngIf="isSubmitting">Submitting...</span>
+          </button>
         </div>
+      </div>
 
-      </form>
-    </mat-card-content>
-  </mat-card>
+      <!-- Success/Error Messages -->
+      <div *ngIf="submitSuccess" class="success-message">
+        <div class="message-icon">✓</div>
+        <div class="message-content">
+          <div class="message-title">Event Submitted Successfully</div>
+          <div class="message-details">Event ID: {{lastEventId}}</div>
+        </div>
+      </div>
+      
+      <div *ngIf="submitError" class="error-message-box">
+        <div class="message-icon">⚠</div>
+        <div class="message-content">
+          <div class="message-title">Submission Failed</div>
+          <div class="message-details">{{submitError}}</div>
+        </div>
+      </div>
+
+    </form>
+  </div>
 </div>

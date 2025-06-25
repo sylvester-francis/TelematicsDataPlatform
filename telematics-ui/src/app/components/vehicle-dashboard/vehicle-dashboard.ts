@@ -27,8 +27,14 @@ import { Vehicle, VehicleStats } from '../../models/vehicle.model';
 export class VehicleDashboard implements OnInit {
   vehicles: Vehicle[] = [];
   vehicleStats: { [key: string]: VehicleStats } = {};
-  displayedColumns: string[] = ['vehicleIdentifier', 'make', 'model', 'year', 'events', 'lastActivity', 'actions'];
-  enhancedDisplayedColumns: string[] = ['status', 'vehicle', 'metrics', 'lastActivity', 'actions'];
+  systemMetrics: {
+    totalVehicles: number;
+    totalEvents: number;
+    unprocessedEvents: number;
+    totalAlerts: number;
+    timestamp: string;
+  } | null = null;
+  backendSupportedColumns: string[] = ['vehicleId', 'vehicleInfo', 'stats', 'lastEvent', 'actions'];
   loading = true;
 
   constructor(
@@ -38,6 +44,7 @@ export class VehicleDashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadSystemMetrics();
     this.loadVehicles();
   }
 
@@ -100,12 +107,35 @@ export class VehicleDashboard implements OnInit {
     this.loadVehicles();
   }
 
-  getTotalEvents(): number {
-    return Object.values(this.vehicleStats).reduce((total, stats) => total + (stats.totalEvents || 0), 0);
+  loadSystemMetrics(): void {
+    this.vehicleService.getSystemMetrics().subscribe({
+      next: (metrics: any) => {
+        this.systemMetrics = metrics;
+      },
+      error: (error: any) => {
+        console.error('Error loading system metrics:', error);
+      }
+    });
   }
 
-  getTotalAlerts(): number {
-    return Object.values(this.vehicleStats).reduce((total, stats) => total + (stats.totalAlerts || 0), 0);
+  checkSystemHealth(): void {
+    this.vehicleService.getSystemHealth().subscribe({
+      next: (health: any) => {
+        const message = `System Status: ${health.status} | Database: ${health.database} | Version: ${health.version}`;
+        this.snackBar.open(message, 'Close', {
+          duration: 5000,
+          panelClass: health.status === 'Healthy' ? ['success-snackbar'] : ['error-snackbar']
+        });
+      },
+      error: (error: any) => {
+        this.handleError('Failed to check system health');
+      }
+    });
+  }
+
+  formatDate(dateString?: string): string {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString();
   }
 
   navigateToSubmitEvent(): void {

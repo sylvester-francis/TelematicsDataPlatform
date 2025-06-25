@@ -1,0 +1,118 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'TelematicsApi/**'
+      - 'TelematicsCore/**'
+      - 'TelematicsData/**'
+      - 'TelematicsTests/**'
+      - '*.sln'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'TelematicsApi/**'
+      - 'TelematicsCore/**'
+      - 'TelematicsData/**'
+      - 'TelematicsTests/**'
+      - '*.sln'
+
+jobs:
+  backend-ci:
+    name: .NET API CI Pipeline
+    runs-on: ubuntu-latest
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          SA_PASSWORD: 'YourStrong!Passw0rd'
+          ACCEPT_EULA: 'Y'
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore TelematicsDataPlatform.sln
+
+    - name: Build solution
+      run: dotnet build TelematicsDataPlatform.sln --no-restore --configuration Release
+
+    - name: Wait for SQL Server to be ready
+      run: |
+        for i in {1..30}; do
+          if docker exec $(docker ps -q --filter ancestor=mcr.microsoft.com/mssql/server:2022-latest) /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -Q 'SELECT 1' > /dev/null 2>&1; then
+            echo "SQL Server is ready!"
+            break
+          fi
+          echo "Waiting for SQL Server... ($i/30)"
+          sleep 3
+        done
+
+    - name: Run tests
+      run: dotnet test TelematicsTests/TelematicsTests.csproj --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+      env:
+        ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=TelematicsDB_Test;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;MultipleActiveResultSets=true"
+
+    - name: Generate code coverage
+      run: |
+        dotnet test TelematicsTests/TelematicsTests.csproj \
+          --configuration Release \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: backend-test-results
+        path: TestResults/
+        retention-days: 7
+
+    - name: Test API endpoints
+      run: |
+        cd TelematicsApi
+        dotnet run --configuration Release --urls="http://localhost:5000" &
+        sleep 10
+        
+        # Test health endpoint
+        curl -f http://localhost:5000/api/health || exit 1
+        echo "✅ Health endpoint working"
+        
+        # Test metrics endpoint
+        curl -f http://localhost:5000/api/health/metrics || exit 1
+        echo "✅ Metrics endpoint working"
+        
+        # Test vehicles endpoint
+        curl -f http://localhost:5000/api/vehicles || exit 1
+        echo "✅ Vehicles endpoint working"
+        
+        echo "🚀 All API endpoints are functional!"
+      env:
+        ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=TelematicsDB_CI;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true;MultipleActiveResultSets=true"
+
+    - name: Comment API status
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && success()
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ Backend API tests passed! 🚀\n\n🔗 All endpoints functional\n💾 Database integration working\n🧪 Unit tests passing\n📊 Code coverage generated'
+          })

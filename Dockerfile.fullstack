@@ -1,0 +1,73 @@
+# Multi-stage build for TelematicsHQ Full Stack
+# This Dockerfile builds both frontend and backend in a single container
+
+# Stage 1: Build Angular Frontend
+FROM node:18-alpine as frontend-build
+WORKDIR /app/frontend
+
+# Copy frontend package files
+COPY telematics-ui/package*.json ./
+RUN npm ci --only=production
+
+# Copy frontend source and build
+COPY telematics-ui/ ./
+RUN npm run build:prod
+
+# Stage 2: Build .NET Backend
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+WORKDIR /src
+
+# Copy backend project files
+COPY ["TelematicsApi/TelematicsApi.csproj", "TelematicsApi/"]
+COPY ["TelematicsCore/TelematicsCore.csproj", "TelematicsCore/"]
+COPY ["TelematicsData/TelematicsData.csproj", "TelematicsData/"]
+
+# Restore dependencies
+RUN dotnet restore "TelematicsApi/TelematicsApi.csproj"
+
+# Copy backend source and build
+COPY . .
+WORKDIR "/src/TelematicsApi"
+RUN dotnet build "TelematicsApi.csproj" -c Release -o /app/build
+RUN dotnet publish "TelematicsApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Stage 3: Production Runtime with nginx + .NET
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+
+# Install nginx
+RUN apt-get update && apt-get install -y nginx curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy backend application
+COPY --from=backend-build /app/publish ./api/
+
+# Copy frontend build
+COPY --from=frontend-build /app/frontend/dist/telematics-ui /var/www/html/
+
+# Copy nginx configuration
+COPY docker/nginx-fullstack.conf /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+# Copy startup script
+COPY docker/start-fullstack.sh /start.sh
+RUN chmod +x /start.sh
+
+# Create directories and set permissions
+RUN mkdir -p /var/log/nginx /var/log/telematics && \
+    chown -R www-data:www-data /var/www/html && \
+    chown -R www-data:www-data /var/log/nginx
+
+# Expose ports
+EXPOSE 80 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost/ && curl -f http://localhost:5000/api/health || exit 1
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+# Start both services
+ENTRYPOINT ["/start.sh"]

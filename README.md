@@ -1,19 +1,21 @@
 # TelematicsHQ - Enterprise Fleet Management Platform
 
-A **world-class, enterprise-grade telematics platform** featuring a premium Angular dashboard and robust .NET backend. Built with professional design principles and enterprise-level architecture.
+A **world-class, enterprise-grade telematics platform** featuring a premium Angular dashboard with interactive maps and robust .NET backend. Built with professional design principles and enterprise-level architecture.
 
-![TelematicsHQ Preview](https://img.shields.io/badge/Status-Production%20Ready-brightgreen) ![Angular](https://img.shields.io/badge/Angular-20-red) ![.NET](https://img.shields.io/badge/.NET-9.0-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)
+[![Build Status](https://github.com/sylvester-francis/TelematicsDataPlatform/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/sylvester-francis/TelematicsDataPlatform/actions) ![TelematicsHQ Preview](https://img.shields.io/badge/Status-Production%20Ready-brightgreen) ![Angular](https://img.shields.io/badge/Angular-18-red) ![.NET](https://img.shields.io/badge/.NET-Core-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue) ![Docker](https://img.shields.io/badge/Docker-Full%20Stack-blue)
 
 ## 🚀 Platform Overview
 
-**TelematicsHQ** is a comprehensive fleet management solution that combines real-time vehicle tracking, advanced analytics, and professional data visualization. The platform features a stunning Angular frontend with glass morphism design and a scalable .NET backend with Entity Framework.
+**TelematicsHQ** is a comprehensive fleet management solution that combines real-time vehicle tracking, interactive mapping, advanced analytics, and professional data visualization. The platform features a stunning Angular frontend with glass morphism design and a scalable .NET backend with Entity Framework.
 
 ### ✨ **Key Highlights**
 - 🎨 **Premium UI/UX**: Glass morphism design with smooth animations
-- 📊 **Advanced Analytics**: Real-time KPIs, interactive charts, and data insights
+- 🗺️ **Interactive Maps**: Real-time vehicle location tracking with Leaflet integration
+- 📊 **Real-time Analytics**: Live system metrics and fleet performance dashboards
 - 🚗 **Fleet Management**: Vehicle tracking, event processing, and alert systems
 - 📱 **Mobile-First**: Responsive design for all devices
 - 🔧 **Enterprise-Ready**: Scalable architecture with Docker support
+- ⚡ **CI/CD Pipeline**: Automated testing and deployment with GitHub Actions
 
 ## 🎯 Quick Start Guide
 
@@ -21,11 +23,12 @@ A **world-class, enterprise-grade telematics platform** featuring a premium Angu
 
 1. **Start the Backend API**
    ```bash
-   # Setup database
-   ./setup-database.sh
+   # Setup database (SQL Server in Docker)
+   docker-compose up sql-server -d
    
    # Run API server
-   ./run-api.sh
+   cd TelematicsApi
+   dotnet run --urls="http://localhost:5000"
    ```
 
 2. **Start the Premium Frontend**
@@ -36,23 +39,41 @@ A **world-class, enterprise-grade telematics platform** featuring a premium Angu
    ```
 
 3. **Access the Platform**
-   - 🌐 **Dashboard**: http://localhost:4200
-   - 🔧 **API**: http://localhost:5261
-   - 📖 **API Docs**: http://localhost:5261/swagger
+   - 🌐 **Dashboard**: http://localhost:4201
+   - 🔧 **API**: http://localhost:5000
+   - 📖 **API Docs**: http://localhost:5000/swagger
 
 ### **Option 2: Docker Deployment**
 ```bash
-# Run everything with Docker
-./run-docker.sh
+# Run full-stack container (Frontend + Backend + Database)
+docker-compose up telematics-fullstack sql-server -d
+
+# Or run separate services
+docker-compose up -d
 ```
 
-### **Option 3: Frontend Only (with Mock Data)**
+### **Option 3: GitHub Container Registry**
 ```bash
-cd telematics-ui
-npm install
-npm start
-# Visit http://localhost:4200
+# Pull and run from GitHub registry
+docker run -d -p 80:80 -p 5000:5000 \
+  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal,1433;Database=TelematicsDB;User Id=sa;Password=YourPass;TrustServerCertificate=true" \
+  ghcr.io/sylvester-francis/telematicsdataplatform/telematics-fullstack:latest
 ```
+
+## 🗺️ Interactive Map Features
+
+### **Real-time Vehicle Tracking**
+- **Live Location Display**: Interactive maps showing exact vehicle positions
+- **Custom Vehicle Markers**: Car emoji markers with animated pulse effects
+- **Detailed Popups**: Click markers to see vehicle information, speed, and last update
+- **Street-level Detail**: Zoom level 15 for precise location viewing
+- **OpenStreetMap Integration**: High-quality, free map tiles
+
+### **Location Intelligence**
+- **GPS Coordinates**: Latitude/longitude display with 6-decimal precision
+- **Last Known Position**: Real-time updates from backend telemetry data
+- **Speed Information**: Current/last known vehicle speed
+- **Timestamp Tracking**: Precise last update times
 
 ## 🏗️ Architecture Overview
 
@@ -65,13 +86,18 @@ telematics-ui/
 │   ├── Responsive grid layouts
 │   └── Premium color schemes
 ├── 📊 Advanced Components
-│   ├── Vehicle Dashboard (Fleet overview)
-│   ├── Vehicle Details (Analytics & charts)
-│   ├── Event Forms (Data submission)
+│   ├── Vehicle Dashboard (Real-time fleet metrics)
+│   ├── Vehicle Details (Analytics & interactive maps)
+│   ├── Event Forms (Telemetry data submission)
 │   └── Navigation (Mobile-responsive)
+├── 🗺️ Mapping Integration
+│   ├── Leaflet.js interactive maps
+│   ├── Custom vehicle markers
+│   ├── Real-time location updates
+│   └── Professional map styling
 └── 🚀 Modern Tech Stack
-    ├── Angular 20 + Material Design
-    ├── Chart.js for visualizations
+    ├── Angular 18 + Material Design
+    ├── Leaflet for mapping
     ├── SCSS with CSS custom properties
     └── TypeScript with strict mode
 ```
@@ -82,15 +108,15 @@ TelematicsDataPlatform/
 ├── 🏢 TelematicsCore/
 │   ├── Business logic & domain models
 │   ├── Service interfaces & implementations
-│   └── Data enrichment algorithms
+│   └── Geospatial data processing
 ├── 💾 TelematicsData/
 │   ├── Entity Framework DbContext
 │   ├── Database migrations
-│   └── Geospatial data support
+│   └── NetTopologySuite geospatial support
 ├── 🌐 TelematicsApi/
 │   ├── REST API controllers
-│   ├── Swagger documentation
-│   └── Health monitoring endpoints
+│   ├── Health monitoring endpoints
+│   └── Vehicle telemetry endpoints
 ├── ⚙️ TelematicsBatchProcessor/
 │   ├── Background data processing
 │   ├── Event enrichment pipeline
@@ -98,110 +124,142 @@ TelematicsDataPlatform/
 └── 🧪 TelematicsTests/
     ├── Unit tests
     ├── Integration tests
-    └── Performance benchmarks
+    └── API endpoint testing
 ```
 
 ## 🎨 Premium UI Features
 
 ### **Dashboard Excellence**
-- **Hero Sections**: Gradient backgrounds with floating statistics
+- **Real-time Metrics**: Live system statistics from backend APIs
 - **Glass Morphism**: Translucent cards with backdrop blur effects
-- **Advanced KPIs**: Performance metrics with trend indicators
-- **Interactive Charts**: Speed analysis and event distribution
-- **Real-time Updates**: Live telemetry data streams
-
-### **Professional Navigation**
-- **TelematicsHQ Branding**: Animated logo with floating effects
-- **Smart Responsive**: Mobile slide-out navigation
-- **User Profile**: Professional user management interface
-- **Quick Actions**: Contextual floating action buttons
+- **Interactive Fleet Table**: Vehicle list with statistics and actions
+- **System Health**: Real-time API health monitoring
+- **Responsive Design**: Mobile-optimized layouts
 
 ### **Vehicle Analytics**
-- **Comprehensive Dashboards**: Multi-metric performance views
-- **Timeline Components**: Professional event streams
-- **Location Intelligence**: GPS tracking with coordinates
-- **Status Indicators**: Live tracking with pulse animations
+- **Interactive Maps**: Street-level vehicle location tracking
+- **Performance Metrics**: Total events, trips, alerts, and speed data
+- **Event Timeline**: Professional event history with status indicators
+- **Location Intelligence**: GPS coordinates and last update times
+- **Real-time Updates**: Live telemetry data from backend
+
+### **Professional Navigation**
+- **TelematicsHQ Branding**: Clean, professional header design
+- **Mobile Navigation**: Responsive slide-out menu
+- **Quick Actions**: System health and event submission shortcuts
 
 ## 🔧 API Endpoints
 
-### **Core Vehicle Management**
+### **Core Backend Integration**
 ```
-GET    /api/vehicles              # Fleet overview
-GET    /api/vehicles/{id}/stats   # Vehicle performance metrics
+GET    /api/vehicles                    # Fleet overview
+GET    /api/vehicles/{id}/stats        # Vehicle performance metrics
 GET    /api/telematics/vehicles/{id}/events  # Event history
-POST   /api/telematics/events     # Submit single event
-POST   /api/telematics/events/batch  # Batch event submission
-GET    /api/health                # System health check
+POST   /api/telematics/events          # Submit single event
+POST   /api/telematics/events/batch    # Batch event submission
+GET    /api/health                     # System health check
+GET    /api/health/metrics             # System metrics dashboard
 ```
 
-### **Advanced Features**
-- **Geospatial Queries**: Location-based vehicle tracking
-- **Real-time Streaming**: WebSocket connections for live data
-- **Alert Management**: Automated notification systems
-- **Data Export**: CSV/JSON export capabilities
+### **Real Data Features**
+- **No Mock Data**: All UI data comes from actual backend APIs
+- **Real-time Updates**: Live system metrics and vehicle statistics
+- **Backend Validation**: Proper error handling and form validation
+- **Geospatial Support**: NetTopologySuite for location data processing
 
 ## 🚀 Enterprise Features
 
-### **Scalability & Performance**
-- **Entity Framework Core**: Optimized database operations
-- **Background Processing**: Asynchronous data enrichment
-- **Caching Strategies**: Redis integration ready
-- **Load Balancing**: Docker Swarm compatible
-
-### **Security & Monitoring**
-- **Health Checks**: Comprehensive system monitoring
-- **Structured Logging**: Serilog with multiple sinks
-- **Error Handling**: Graceful degradation patterns
-- **API Documentation**: Interactive Swagger interface
+### **Production-Ready Architecture**
+- **Entity Framework Core**: Optimized database operations with migrations
+- **Structured Logging**: Serilog with file and console output
+- **Health Monitoring**: Comprehensive API health checks
+- **Error Handling**: Graceful error responses and user feedback
+- **Docker Support**: Containerized deployment ready
 
 ### **Development Experience**
-- **Hot Reload**: Instant development feedback
-- **Type Safety**: Full TypeScript coverage
-- **Testing**: Comprehensive unit and integration tests
-- **Docker Support**: Containerized development environment
+- **Hot Reload**: Instant development feedback for both frontend and backend
+- **Type Safety**: Full TypeScript coverage with strict mode
+- **Testing**: Comprehensive API integration tests
+- **CI/CD Pipeline**: Automated testing and deployment
 
 ## 📊 Technology Stack
 
 ### **Frontend Technologies**
-- **Framework**: Angular 20 with standalone components
-- **UI Library**: Angular Material with custom theming
-- **Charts**: Chart.js with ng2-charts integration
-- **Styling**: SCSS with modern CSS features
-- **Icons**: Material Design icons with custom extensions
+- **Framework**: Angular 18 with standalone components
+- **UI Library**: Angular Material with custom glass morphism theming
+- **Mapping**: Leaflet.js for interactive maps and geospatial visualization
+- **HTTP Client**: Modern RxJS with firstValueFrom for API calls
+- **Styling**: SCSS with CSS custom properties and responsive design
+- **Icons**: Material Design icons
 - **Fonts**: Inter typeface with multiple weights
 
 ### **Backend Technologies**
-- **Runtime**: .NET 9.0 with C# 13
-- **Database**: SQL Server with spatial extensions
-- **ORM**: Entity Framework Core with migrations
-- **Logging**: Serilog with structured logging
-- **Testing**: xUnit with FluentAssertions
+- **Runtime**: .NET Core with C#
+- **Database**: SQL Server with NetTopologySuite spatial extensions
+- **ORM**: Entity Framework Core with code-first migrations
+- **Logging**: Serilog with structured logging to files and console
+- **Testing**: xUnit with integration testing
+- **Containerization**: Docker with SQL Server container support
+
+### **DevOps & CI/CD**
+- **Version Control**: Git with GitHub
+- **CI/CD**: GitHub Actions for automated testing and deployment
 - **Containerization**: Docker with multi-stage builds
+- **Database**: SQL Server in Docker for development
+
+## 🚀 CI/CD Pipeline
+
+### **GitHub Actions Workflow**
+[![CI/CD Pipeline](https://github.com/sylvester-francis/TelematicsDataPlatform/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/sylvester-francis/TelematicsDataPlatform/actions)
+
+**Automated Testing & Deployment**
+- ✅ **Backend Tests**: .NET unit tests with SQL Server containers
+- ✅ **Frontend Tests**: Angular unit tests and linting
+- ✅ **Integration Tests**: Full API testing with database
+- ✅ **Security Scanning**: Trivy vulnerability scanning
+- ✅ **Code Quality**: SonarCloud analysis
+- ✅ **Docker Builds**: Multi-platform container builds
+
+### **Container Registry**
+```bash
+# GitHub Container Registry (GHCR)
+ghcr.io/sylvester-francis/telematicsdataplatform/telematics-fullstack:latest
+
+# Automatic builds on main branch
+# Multi-platform: linux/amd64, linux/arm64
+# Health checks and deployment manifests included
+```
+
+### **Deployment Environments**
+- **Development**: Local Docker with hot reload
+- **Staging**: Automated deployment from `develop` branch
+- **Production**: Automated deployment from `main` branch
+- **Performance Testing**: Automated load testing on releases
 
 ## 🎯 Getting Started for Development
 
 ### **Prerequisites**
 - Node.js 18+ (for Angular frontend)
-- .NET 9.0 SDK (for backend development)
-- SQL Server or Docker (for database)
-- Visual Studio Code or preferred IDE
+- .NET Core SDK (for backend development)
+- Docker (for SQL Server database)
+- Git (for version control)
 
 ### **Development Workflow**
 
 1. **Clone & Setup**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sylvester-francis/TelematicsDataPlatform.git
    cd TelematicsDataPlatform
    ```
 
 2. **Backend Development**
    ```bash
-   # Setup database
-   ./setup-database.sh
+   # Start SQL Server in Docker
+   docker-compose up sql-server -d
    
    # Run API with hot reload
    cd TelematicsApi
-   dotnet watch run
+   dotnet watch run --urls="http://localhost:5000"
    ```
 
 3. **Frontend Development**
@@ -217,51 +275,77 @@ GET    /api/health                # System health check
 4. **Testing**
    ```bash
    # Run backend tests
-   ./run-tests.sh
+   cd TelematicsTests
+   dotnet test
    
    # Run frontend tests
    cd telematics-ui
    npm test
    ```
 
-## 🌟 Professional Design System
+## 🌟 Key Features Showcase
 
-### **Visual Identity**
-- **Primary Colors**: Professional blue gradient palette
-- **Accent Colors**: Purple, green, orange themed gradients
-- **Typography**: Inter font family with perfect hierarchy
-- **Spacing**: Consistent 8px grid system
-- **Shadows**: Multiple elevation levels for depth
+### **Real Backend Integration**
+- **Live System Metrics**: Total vehicles, events, alerts from `/api/health/metrics`
+- **Vehicle Statistics**: Real performance data from `/api/vehicles/{id}/stats`
+- **Event Submission**: Actual form submission to `/api/telematics/events`
+- **Error Handling**: Proper validation and user feedback
 
-### **Interaction Design**
-- **Micro-Animations**: Smooth hover and focus states
-- **Loading States**: Professional spinners and skeletons
-- **Responsive Behavior**: Mobile-first adaptive layouts
-- **Accessibility**: WCAG 2.1 AA compliance ready
+### **Interactive Mapping**
+- **Real Location Data**: Maps display actual GPS coordinates from backend
+- **Custom Markers**: Professional car emoji markers with pulse animations
+- **Detailed Popups**: Vehicle information, coordinates, speed, and timestamps
+- **Mobile Responsive**: Optimized map experience on all devices
+
+### **Professional UI/UX**
+- **Glass Morphism Design**: Modern translucent card effects
+- **Responsive Layout**: Mobile-first design with professional animations
+- **Real-time Updates**: Live data refresh and status indicators
+- **No Mock Data**: Everything connected to actual backend APIs
 
 ## 📈 Production Deployment
 
 ### **Docker Production Setup**
 ```bash
-# Build production images
-docker-compose -f docker-compose.prod.yml build
+# Full-stack deployment (recommended)
+docker-compose up telematics-fullstack sql-server -d
 
-# Deploy to production
-docker-compose -f docker-compose.prod.yml up -d
+# From GitHub Container Registry
+docker pull ghcr.io/sylvester-francis/telematicsdataplatform/telematics-fullstack:latest
+
+# Separate services (alternative)
+docker-compose up -d
+
+# Build production images locally
+docker build -f Dockerfile.fullstack -t telematics-fullstack .
+docker build -t telematics-api ./TelematicsApi
+docker build -t telematics-ui ./telematics-ui
 ```
 
 ### **Environment Configuration**
-- **Development**: Local SQL Server + Angular dev server
+- **Development**: Local development with Docker SQL Server
 - **Staging**: Docker containers with external database
-- **Production**: Kubernetes deployment ready
+- **Production**: Kubernetes deployment ready with CI/CD pipeline
 
 ## 🤝 Contributing
 
-We welcome contributions to make TelematicsHQ even better! Please see our contributing guidelines for:
-- Code style and conventions
-- Pull request process
-- Issue reporting guidelines
-- Development environment setup
+We welcome contributions to make TelematicsHQ even better!
+
+### **Contribution Process**
+1. **Fork** the [repository](https://github.com/sylvester-francis/TelematicsDataPlatform)
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Make** your changes and add tests
+4. **Run** tests locally: `dotnet test && cd telematics-ui && npm test`
+5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+6. **Push** to your branch (`git push origin feature/amazing-feature`)
+7. **Open** a Pull Request
+
+### **Development Guidelines**
+- ✅ All tests must pass (CI will verify)
+- ✅ Follow existing code patterns and styles
+- ✅ Add tests for new features
+- ✅ Update documentation if needed
+- ✅ Ensure Docker builds successfully
 
 ## 📄 License
 
@@ -269,5 +353,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**TelematicsHQ** - *Professional Fleet Management Platform*
-Built with ❤️ using Angular, .NET, and modern web technologies.
+**TelematicsHQ** - *Professional Fleet Management Platform with Interactive Maps*
+
+🔗 **Repository**: [https://github.com/sylvester-francis/TelematicsDataPlatform](https://github.com/sylvester-francis/TelematicsDataPlatform)
+📦 **Container Registry**: [ghcr.io/sylvester-francis/telematicsdataplatform](https://github.com/sylvester-francis/TelematicsDataPlatform/pkgs/container/telematicsdataplatform%2Ftelematics-fullstack)
+🚀 **CI/CD**: [GitHub Actions](https://github.com/sylvester-francis/TelematicsDataPlatform/actions)
+
+Built with ❤️ using Angular, .NET Core, Leaflet, Docker, and modern web technologies.

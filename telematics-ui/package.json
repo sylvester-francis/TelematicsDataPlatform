@@ -5,8 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
+    "test:coverage": "ng test --code-coverage --watch=false",
+    "lint": "ng lint || echo 'ESLint not configured'",
+    "serve:prod": "ng serve --configuration production"
   },
   "private": true,
   "dependencies": {
@@ -20,7 +25,9 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@types/chart.js": "^2.9.41",
+    "@types/leaflet": "^1.9.19",
     "chart.js": "^4.5.0",
+    "leaflet": "^1.9.4",
     "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

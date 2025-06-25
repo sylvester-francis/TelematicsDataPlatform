@@ -38,29 +38,9 @@
     
     <!-- Action Section -->
     <div class="nav-actions">
-      <button mat-icon-button class="action-btn" title="Notifications">
-        <mat-icon>notifications_outlined</mat-icon>
-        <span class="notification-badge">3</span>
+      <button mat-icon-button class="action-btn" title="System Health" routerLink="/dashboard">
+        <mat-icon>health_and_safety</mat-icon>
       </button>
-      
-      <button mat-icon-button class="action-btn" title="Settings">
-        <mat-icon>settings_outlined</mat-icon>
-      </button>
-      
-      <div class="user-profile">
-        <button mat-button class="profile-button">
-          <div class="profile-avatar">
-            <mat-icon>person</mat-icon>
-          </div>
-          <div class="profile-info">
-            <div class="profile-name">Fleet Manager</div>
-            <div class="profile-role">Administrator</div>
-          </div>
-          <div class="profile-dropdown">
-            <mat-icon>keyboard_arrow_down</mat-icon>
-          </div>
-        </button>
-      </div>
       
       <!-- Mobile Menu Toggle -->
       <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
@@ -70,10 +50,10 @@
   </div>
 
   <!-- Mobile Navigation Overlay -->
-  <div class="mobile-nav-overlay" [class.show]="showMobileMenu" (click)="closeMobileMenu()"></div>
+  <div class="mobile-nav-overlay" [class.show]="mobileMenuOpen" (click)="closeMobileMenu()"></div>
   
   <!-- Mobile Navigation Menu -->
-  <div class="mobile-nav-menu" [class.show]="showMobileMenu">
+  <div class="mobile-nav-menu" [class.show]="mobileMenuOpen">
     <div class="mobile-nav-header">
       <h3 class="nav-title">Navigation</h3>
       <button mat-icon-button class="close-btn" (click)="closeMobileMenu()">
@@ -100,13 +80,9 @@
     </div>
     
     <div class="mobile-nav-actions">
-      <div class="action-item">
-        <mat-icon>notifications_outlined</mat-icon>
-        <span class="action-text">Notifications</span>
-      </div>
-      <div class="action-item">
-        <mat-icon>settings_outlined</mat-icon>
-        <span class="action-text">Settings</span>
+      <div class="action-item" routerLink="/dashboard" (click)="closeMobileMenu()">
+        <mat-icon>health_and_safety</mat-icon>
+        <span class="action-text">System Health</span>
       </div>
     </div>
   </div>

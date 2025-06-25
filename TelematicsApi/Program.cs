@@ -60,7 +60,7 @@ builder.Services.AddScoped<IDataEnrichmentService, DataEnrichmentService>();
 
 // Add health checks
 builder.Services.AddHealthChecks()
-    .AddDbContext<TelematicsDbContext>();
+    .AddDbContextCheck<TelematicsDbContext>();
 
 // Add CORS
 builder.Services.AddCors(options =>

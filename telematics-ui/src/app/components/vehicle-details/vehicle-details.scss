@@ -1,16 +1,14 @@
+@import '../../shared/mixins.scss';
+
 .vehicle-details-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-6);
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 100%);
+  background: var(--background-gradient);
   
   @media (max-width: 768px) {
     padding: var(--space-4);
-  }
-  
-  @media (max-width: 480px) {
-    padding: var(--space-3);
   }
 }
 
@@ -26,704 +24,208 @@
     margin-bottom: var(--space-6);
     
     .back-button {
+      @include mat-icon-size(24);
       width: 48px !important;
       height: 48px !important;
       background: var(--gray-100) !important;
       border-radius: var(--radius-xl) !important;
-      transition: all var(--transition-fast) !important;
+      transition: var(--transition-fast) !important;
       
       &:hover {
         background: var(--gray-200) !important;
         transform: translateX(-2px);
       }
-      
-      .mat-icon {
-        font-size: 24px !important;
-        width: 24px !important;
-        height: 24px !important;
-        color: var(--gray-700);
-      }
-    }
-    
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      
-      .breadcrumb-item {
-        font-size: 0.875rem;
-        color: var(--gray-500);
-        font-weight: 500;
-        
-        &.active {
-          color: var(--gray-800);
-          font-weight: 600;
-        }
-      }
-      
-      .breadcrumb-separator {
-        font-size: 16px !important;
-        width: 16px !important;
-        height: 16px !important;
-        color: var(--gray-400);
-      }
     }
   }
   
-  .vehicle-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
+  .vehicle-title {
+    @include glass-card;
+    padding: var(--space-6);
+    text-align: center;
     
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-4);
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: var(--space-2);
     }
     
-    .vehicle-icon {
-      width: 64px;
-      height: 64px;
-      background: var(--accent-purple);
-      border-radius: var(--radius-xl);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-lg);
-      
-      .mat-icon {
-        font-size: 32px !important;
-        width: 32px !important;
-        height: 32px !important;
-        color: white;
-      }
-    }
-    
-    .vehicle-details {
-      flex: 1;
-      
-      .vehicle-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0 0 var(--space-1) 0;
-        color: var(--gray-900);
-        
-        @media (max-width: 768px) {
-          font-size: 1.75rem;
-        }
-      }
-      
-      .vehicle-subtitle {
-        font-size: 1rem;
-        color: var(--gray-600);
-        margin: 0;
-        font-weight: 500;
-      }
-    }
-    
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-3) var(--space-4);
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: var(--radius-lg);
-      
-      .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        
-        &.active {
-          background: #10b981;
-        }
-      }
-      
-      .status-text {
-        font-size: 0.875rem;
-        color: var(--gray-700);
-        font-weight: 600;
-      }
+    .vehicle-id {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
     }
   }
 }
 
-// Loading State
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  text-align: center;
+// Content Grid
+.vehicle-content {
+  @include responsive-grid(1, 1, 2);
+  gap: var(--space-6);
+}
+
+// Vehicle Info Card
+.vehicle-info-card {
+  @include glass-card;
+  @include hover-lift;
+  padding: var(--space-6);
   
-  .loading-spinner {
-    width: 48px;
-    height: 48px;
-    border: 3px solid var(--gray-200);
-    border-top: 3px solid var(--primary-500);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  h2 {
+    color: var(--text-primary);
     margin-bottom: var(--space-4);
-    
-    &.small {
-      width: 24px;
-      height: 24px;
-      border-width: 2px;
-    }
+    font-weight: 600;
   }
   
-  .loading-text {
-    font-size: 1rem;
-    color: var(--gray-600);
-    font-weight: 500;
-  }
-}
-
-// Section Styling
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--gray-900);
-  margin: 0 0 var(--space-6) 0;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-6);
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
+  .info-grid {
+    @include responsive-grid(1, 2, 2);
     gap: var(--space-4);
   }
   
-  .section-actions {
-    .refresh-btn {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-3) var(--space-4) !important;
-      background: rgba(255, 255, 255, 0.8) !important;
-      color: var(--gray-700) !important;
-      border: 1px solid rgba(255, 255, 255, 0.3) !important;
-      border-radius: var(--radius-lg) !important;
-      font-weight: 500 !important;
-      transition: all var(--transition-fast) !important;
-      
-      &:hover {
-        background: rgba(255, 255, 255, 0.95) !important;
-        transform: translateY(-1px);
-      }
-      
-      .mat-icon {
-        font-size: 18px !important;
-        width: 18px !important;
-        height: 18px !important;
-      }
+  .info-item {
+    .label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    
+    .value {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text-primary);
     }
   }
 }
 
-// Statistics Section
-.stats-section {
-  margin-bottom: var(--space-8);
+// Map Card
+.map-card {
+  @include glass-card;
+  padding: 0;
+  overflow: hidden;
   
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-6);
+  .map-header {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--border-color);
+    
+    h3 {
+      margin: 0;
+      color: var(--text-primary);
+    }
+  }
+  
+  .map-container {
+    height: 400px;
+    position: relative;
     
     @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-4);
-    }
-    
-    @media (max-width: 640px) {
-      grid-template-columns: 1fr;
-      gap: var(--space-3);
-    }
-  }
-  
-  .stat-card {
-    padding: var(--space-6);
-    text-align: center;
-    transition: all var(--transition-normal);
-    
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-xl) !important;
-    }
-    
-    .stat-header {
-      margin-bottom: var(--space-4);
-      
-      .stat-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: var(--radius-xl);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
-        
-        &.events {
-          background: rgba(59, 130, 246, 0.1);
-          
-          .mat-icon {
-            color: #3b82f6;
-          }
-        }
-        
-        &.trips {
-          background: rgba(16, 185, 129, 0.1);
-          
-          .mat-icon {
-            color: #10b981;
-          }
-        }
-        
-        &.alerts {
-          background: rgba(239, 68, 68, 0.1);
-          
-          .mat-icon {
-            color: #ef4444;
-          }
-        }
-        
-        &.speed {
-          background: rgba(245, 158, 11, 0.1);
-          
-          .mat-icon {
-            color: #f59e0b;
-          }
-        }
-        
-        .mat-icon {
-          font-size: 28px !important;
-          width: 28px !important;
-          height: 28px !important;
-        }
-      }
-    }
-    
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: var(--space-1);
-      
-      @media (max-width: 768px) {
-        font-size: 1.75rem;
-      }
-    }
-    
-    .stat-label {
-      font-size: 0.875rem;
-      color: var(--gray-600);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
-}
-
-// Location Section
-.location-section {
-  margin-bottom: var(--space-8);
-  
-  .location-card {
-    padding: var(--space-6);
-    
-    .location-header {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--space-4);
-      margin-bottom: var(--space-4);
-      
-      .location-icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(16, 185, 129, 0.1);
-        border-radius: var(--radius-lg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        
-        .mat-icon {
-          font-size: 24px !important;
-          width: 24px !important;
-          height: 24px !important;
-          color: #10b981;
-        }
-      }
-      
-      .location-info {
-        flex: 1;
-        
-        .location-coords {
-          display: flex;
-          gap: var(--space-2);
-          margin-bottom: var(--space-2);
-          
-          .coord-label {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            font-weight: 500;
-            min-width: 80px;
-          }
-          
-          .coord-value {
-            font-size: 0.875rem;
-            color: var(--gray-900);
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-          }
-        }
-      }
-    }
-    
-    .location-time {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-3);
-      background: rgba(0, 0, 0, 0.05);
-      border-radius: var(--radius-md);
-      
-      .mat-icon {
-        font-size: 16px !important;
-        width: 16px !important;
-        height: 16px !important;
-        color: var(--gray-500);
-      }
-      
-      span {
-        font-size: 0.75rem;
-        color: var(--gray-600);
-        font-weight: 500;
-      }
+      height: 300px;
     }
   }
 }
 
 // Events Section
 .events-section {
-  .events-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-3);
-    padding: var(--space-8);
-    
-    span {
-      font-size: 0.875rem;
-      color: var(--gray-600);
-      font-weight: 500;
-    }
-  }
+  grid-column: 1 / -1;
   
-  .events-list-container {
-    .events-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-      
-      .event-item {
-        padding: var(--space-4);
-        transition: all var(--transition-fast);
-        
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-lg) !important;
-        }
-        
-        .event-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: var(--space-3);
-          
-          @media (max-width: 640px) {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: var(--space-2);
-          }
-          
-          .event-type-badge {
-            padding: var(--space-1) var(--space-2);
-            border-radius: var(--radius-md);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            
-            &.position {
-              background: rgba(59, 130, 246, 0.1);
-              color: #3b82f6;
-            }
-            
-            &.ignition-on {
-              background: rgba(16, 185, 129, 0.1);
-              color: #10b981;
-            }
-            
-            &.ignition-off {
-              background: rgba(107, 114, 128, 0.1);
-              color: #6b7280;
-            }
-            
-            &.speeding {
-              background: rgba(239, 68, 68, 0.1);
-              color: #ef4444;
-            }
-            
-            &.harsh-braking, &.harsh-acceleration {
-              background: rgba(245, 158, 11, 0.1);
-              color: #f59e0b;
-            }
-            
-            &.default {
-              background: rgba(107, 114, 128, 0.1);
-              color: #6b7280;
-            }
-          }
-          
-          .event-timestamp {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            font-weight: 500;
-          }
-        }
-        
-        .event-details {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: var(--space-3);
-          
-          @media (max-width: 640px) {
-            grid-template-columns: 1fr;
-            gap: var(--space-2);
-          }
-          
-          .event-detail {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            
-            .detail-label {
-              font-size: 0.75rem;
-              color: var(--gray-500);
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
-              min-width: 60px;
-            }
-            
-            .detail-value {
-              font-size: 0.875rem;
-              color: var(--gray-800);
-              font-weight: 500;
-              
-              &.coordinates {
-                font-family: 'JetBrains Mono', monospace;
-                font-size: 0.75rem;
-              }
-            }
-            
-            .status-badge {
-              padding: var(--space-1) var(--space-2);
-              border-radius: var(--radius-md);
-              font-size: 0.75rem;
-              font-weight: 600;
-              text-transform: uppercase;
-              
-              &.processed {
-                background: rgba(16, 185, 129, 0.1);
-                color: #10b981;
-              }
-              
-              &.pending {
-                background: rgba(245, 158, 11, 0.1);
-                color: #f59e0b;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  .no-events {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-12);
-    text-align: center;
+  .events-card {
+    @include glass-card;
+    padding: var(--space-6);
     
-    .no-events-icon {
-      width: 64px;
-      height: 64px;
-      background: var(--gray-100);
-      border-radius: 50%;
+    .events-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
       margin-bottom: var(--space-4);
       
-      .mat-icon {
-        font-size: 32px !important;
-        width: 32px !important;
-        height: 32px !important;
-        color: var(--gray-400);
+      h3 {
+        margin: 0;
+        color: var(--text-primary);
+      }
+      
+      .events-count {
+        @include status-badge(var(--primary-color));
       }
     }
     
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--gray-800);
-      margin: 0 0 var(--space-2) 0;
-    }
-    
-    p {
-      font-size: 0.875rem;
-      color: var(--gray-600);
-      margin: 0;
-      max-width: 400px;
-    }
-  }
-}
-
-// Map Styles
-.map-card {
-  margin-top: var(--space-6);
-  padding: 0;
-  overflow: hidden;
-  
-  .map-header {
-    padding: var(--space-4) var(--space-6);
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    
-    .map-title {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--gray-800);
-      
-      .mat-icon {
-        font-size: 20px !important;
-        width: 20px !important;
-        height: 20px !important;
-        color: var(--primary-600);
-      }
-    }
-  }
-  
-  .map-container {
-    height: 400px;
-    width: 100%;
-    position: relative;
-    
-    @media (max-width: 768px) {
-      height: 300px;
-    }
-    
-    // Override Leaflet styles for better integration
-    .leaflet-container {
-      font-family: 'Inter', sans-serif;
-    }
-    
-    .leaflet-popup-content-wrapper {
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-    }
-    
-    .leaflet-popup-content {
-      margin: 0;
-      
-      .vehicle-popup {
+    .events-list {
+      .event-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: var(--space-3);
+        margin-bottom: var(--space-2);
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: var(--radius-lg);
+        transition: var(--transition-base);
         
-        h4 {
-          margin: 0 0 var(--space-2) 0;
-          font-size: 1rem;
-          font-weight: 600;
-          color: var(--gray-900);
+        &:hover {
+          background: rgba(255, 255, 255, 0.7);
         }
         
-        p {
-          margin: 0 0 var(--space-1) 0;
-          font-size: 0.875rem;
-          color: var(--gray-700);
-          
-          &:last-child {
-            margin-bottom: 0;
-          }
-          
-          strong {
-            color: var(--gray-900);
+        .event-info {
+          .event-type {
             font-weight: 600;
+            color: var(--text-primary);
           }
+          
+          .event-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+          }
+        }
+        
+        .event-status {
+          &.status-completed { @include status-badge(var(--success-color)); }
+          &.status-active { @include status-badge(var(--warning-color)); }
+          &.status-error { @include status-badge(var(--error-color)); }
         }
       }
     }
   }
 }
 
-// Custom Vehicle Marker Styles
-.custom-vehicle-marker {
-  .vehicle-marker {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    .marker-icon {
-      font-size: 24px;
-      z-index: 2;
-      position: relative;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    }
-    
-    .marker-pulse {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(59, 130, 246, 0.3);
-      transform: translate(-50%, -50%);
-      animation: pulse 2s infinite;
-    }
+// Loading states
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  
+  .loading-spinner {
+    @include mat-icon-size(40);
+    color: var(--primary-color);
+    animation: spin 1s linear infinite;
   }
 }
 
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
+// Error states
+.error-state {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--error-color);
+  
+  .error-icon {
+    @include mat-icon-size(48);
+    margin-bottom: var(--space-4);
   }
 }
 
-// Animations
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+// Responsive adjustments
+@media (max-width: 768px) {
+  .vehicle-header .vehicle-title h1 {
+    font-size: 2rem;
+  }
+  
+  .vehicle-content {
+    gap: var(--space-4);
+  }
+  
+  .events-section .events-card .events-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
 }

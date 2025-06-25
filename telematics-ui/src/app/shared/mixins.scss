@@ -1,0 +1,55 @@
+// Shared mixins for TelematicsHQ components
+
+// Card mixin for glass effect
+@mixin glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+// Status badge mixin
+@mixin status-badge($color) {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #{$color}20;
+  color: $color;
+  border: 1px solid #{$color}40;
+}
+
+// Material icon sizing
+@mixin mat-icon-size($size) {
+  font-size: #{$size}px !important;
+  width: #{$size}px !important;
+  height: #{$size}px !important;
+}
+
+// Hover effect for interactive elements
+@mixin hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Responsive grid mixin
+@mixin responsive-grid($mobile: 1, $tablet: 2, $desktop: 3) {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat($mobile, 1fr);
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat($tablet, 1fr);
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat($desktop, 1fr);
+  }
+}

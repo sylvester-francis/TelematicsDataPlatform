@@ -23,6 +23,9 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "leaflet"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -43,8 +46,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"

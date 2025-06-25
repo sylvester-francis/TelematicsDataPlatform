@@ -8,7 +8,7 @@ on:
 
 env:
   DOTNET_VERSION: '9.0.x'
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '20.19.0'
 
 jobs:
   # Backend .NET API Testing
@@ -104,6 +104,18 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         cache-dependency-path: 'telematics-ui/package-lock.json'
+        check-latest: true
+        check-latest: true
+        
+    - name: Verify Node.js version
+      run: |
+        echo "Node.js version: $(node --version)"
+        echo "npm version: $(npm --version)"
+        echo "Expected Node.js version: ${{ env.NODE_VERSION }}"
+        if [[ "$(node --version)" < "v20.19.0" ]]; then
+          echo "❌ Node.js version is too old. Angular 18 requires Node.js 20.19.0+"
+          exit 1
+        fi
 
     - name: Install dependencies
       working-directory: ./telematics-ui
@@ -172,6 +184,7 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         cache-dependency-path: 'telematics-ui/package-lock.json'
+        check-latest: true
 
     - name: Build backend
       run: |

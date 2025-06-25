@@ -6,6 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { VehicleService } from '../../services/vehicle.service';
 import { Vehicle, VehicleStats } from '../../models/vehicle.model';
 
@@ -17,7 +18,8 @@ import { Vehicle, VehicleStats } from '../../models/vehicle.model';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   templateUrl: './vehicle-dashboard.html',
   styleUrl: './vehicle-dashboard.scss'
@@ -26,11 +28,13 @@ export class VehicleDashboard implements OnInit {
   vehicles: Vehicle[] = [];
   vehicleStats: { [key: string]: VehicleStats } = {};
   displayedColumns: string[] = ['vehicleIdentifier', 'make', 'model', 'year', 'events', 'lastActivity', 'actions'];
+  enhancedDisplayedColumns: string[] = ['status', 'vehicle', 'metrics', 'lastActivity', 'actions'];
   loading = true;
 
   constructor(
     private vehicleService: VehicleService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +53,7 @@ export class VehicleDashboard implements OnInit {
       },
       error: (error) => {
         console.error('Error loading vehicles:', error);
+        this.handleError('Failed to load vehicles. Please try again later.');
         this.loading = false;
       }
     });
@@ -76,5 +81,30 @@ export class VehicleDashboard implements OnInit {
   formatDateTime(dateString?: string): string {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString() + ' ' + new Date(dateString).toLocaleTimeString();
+  }
+
+  handleError(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar'],
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  retryLoadVehicles(): void {
+    this.loadVehicles();
+  }
+
+  refreshData(): void {
+    this.loadVehicles();
+  }
+
+  getTotalEvents(): number {
+    return Object.values(this.vehicleStats).reduce((total, stats) => total + (stats.totalEvents || 0), 0);
+  }
+
+  getTotalAlerts(): number {
+    return Object.values(this.vehicleStats).reduce((total, stats) => total + (stats.totalAlerts || 0), 0);
   }
 }

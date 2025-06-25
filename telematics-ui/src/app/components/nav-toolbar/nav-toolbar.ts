@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-nav-toolbar',
   imports: [
-    MatToolbarModule,
+    CommonModule,
     MatButtonModule,
     MatIconModule,
     RouterModule
@@ -16,5 +16,13 @@ import { RouterModule } from '@angular/router';
   styleUrl: './nav-toolbar.scss'
 })
 export class NavToolbar {
+  mobileMenuOpen = false;
 
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+  }
 }

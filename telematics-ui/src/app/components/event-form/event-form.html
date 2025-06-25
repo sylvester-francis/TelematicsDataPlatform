@@ -1,1 +1,146 @@
-<p>event-form works!</p>
+<div class="event-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Submit Telematics Event</mat-card-title>
+      <mat-card-subtitle>Add new vehicle event data to the system</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+        
+        <!-- Vehicle Information -->
+        <div class="form-section">
+          <h3 class="section-title">Vehicle Information</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Vehicle Identifier</mat-label>
+              <input matInput formControlName="vehicleIdentifier" placeholder="e.g., DEMO-001">
+              <mat-error *ngIf="eventForm.get('vehicleIdentifier')?.hasError('required')">
+                Vehicle identifier is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="form-section">
+          <h3 class="section-title">Event Details</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Event Type</mat-label>
+              <mat-select formControlName="eventType">
+                <mat-option *ngFor="let type of eventTypes" [value]="type">
+                  {{type}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Timestamp</mat-label>
+              <input matInput type="datetime-local" formControlName="timestamp">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Location Data -->
+        <div class="form-section">
+          <h3 class="section-title">Location Data</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Latitude</mat-label>
+              <input matInput type="number" step="any" formControlName="latitude" placeholder="40.7128">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Longitude</mat-label>
+              <input matInput type="number" step="any" formControlName="longitude" placeholder="-74.0060">
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Speed (km/h)</mat-label>
+              <input matInput type="number" formControlName="speed" placeholder="65">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Heading (°)</mat-label>
+              <input matInput type="number" formControlName="heading" placeholder="45">
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Altitude (m)</mat-label>
+              <input matInput type="number" formControlName="altitude" placeholder="100">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Vehicle Diagnostics -->
+        <div class="form-section">
+          <h3 class="section-title">Vehicle Diagnostics</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Odometer (km)</mat-label>
+              <input matInput type="number" formControlName="odometer" placeholder="125000">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Fuel Level (%)</mat-label>
+              <input matInput type="number" formControlName="fuelLevel" placeholder="75">
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Engine Load (%)</mat-label>
+              <input matInput type="number" formControlName="engineLoad" placeholder="45">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Engine RPM</mat-label>
+              <input matInput type="number" formControlName="engineRPM" placeholder="2500">
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Engine Coolant Temperature (°C)</mat-label>
+              <input matInput type="number" formControlName="engineCoolantTemperature" placeholder="85">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Additional Data -->
+        <div class="form-section">
+          <h3 class="section-title">Additional Information</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Additional Data (JSON)</mat-label>
+              <textarea matInput rows="4" formControlName="additionalData" 
+                        placeholder='{"customField": "value"}'></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button mat-raised-button type="button" color="accent" (click)="fillSampleData()" class="sample-btn">
+            Fill Sample Data
+          </button>
+          
+          <div class="action-buttons">
+            <button mat-raised-button type="button" (click)="eventForm.reset()" class="reset-btn">
+              Reset Form
+            </button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="!eventForm.valid" class="submit-btn">
+              Submit Event
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

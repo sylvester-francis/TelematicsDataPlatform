@@ -7,7 +7,7 @@ import { Vehicle, VehicleStats, TelematicsEvent, TelematicsEventDto } from '../m
   providedIn: 'root'
 })
 export class VehicleService {
-  private apiUrl = 'http://localhost:5000/api';
+  private apiUrl = 'http://localhost:5261/api';
 
   constructor(private http: HttpClient) {}
 

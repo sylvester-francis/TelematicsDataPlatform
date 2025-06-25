@@ -1,15 +1,120 @@
-<mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <span class="app-title">
-      <mat-icon>directions_car</mat-icon>
-      Telematics Dashboard
-    </span>
+<nav class="modern-navbar glass-card">
+  <div class="navbar-container">
+    <!-- Brand Section -->
+    <div class="brand-section">
+      <div class="brand-icon animate-float">
+        <mat-icon>speed</mat-icon>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-title gradient-text">TelematicsHQ</h1>
+        <p class="brand-subtitle">Professional Fleet Management</p>
+      </div>
+    </div>
     
-    <span class="spacer"></span>
+    <!-- Navigation Links -->
+    <div class="nav-links">
+      <a mat-button 
+         routerLink="/dashboard" 
+         routerLinkActive="active-nav-link"
+         class="nav-link">
+        <div class="nav-link-content">
+          <mat-icon>dashboard</mat-icon>
+          <span class="nav-text">Dashboard</span>
+          <div class="nav-indicator"></div>
+        </div>
+      </a>
+      
+      <a mat-button 
+         routerLink="/submit-event" 
+         routerLinkActive="active-nav-link"
+         class="nav-link">
+        <div class="nav-link-content">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span class="nav-text">Submit Event</span>
+          <div class="nav-indicator"></div>
+        </div>
+      </a>
+    </div>
     
-    <button mat-button routerLink="/dashboard" routerLinkActive="active-link">
-      <mat-icon>dashboard</mat-icon>
-      Dashboard
+    <!-- Action Section -->
+    <div class="nav-actions">
+      <button mat-icon-button class="action-btn" title="Notifications">
+        <mat-icon>notifications_outlined</mat-icon>
+        <span class="notification-badge">3</span>
+      </button>
+      
+      <button mat-icon-button class="action-btn" title="Settings">
+        <mat-icon>settings_outlined</mat-icon>
+      </button>
+      
+      <div class="user-profile">
+        <button mat-button class="profile-btn">
+          <div class="avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Fleet Manager</span>
+            <span class="user-role">Administrator</span>
+          </div>
+          <mat-icon class="dropdown-icon">expand_more</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu Toggle -->
+    <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+      <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
     </button>
-  </mat-toolbar-row>
-</mat-toolbar>
+  </div>
+  
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav-overlay" [class.open]="mobileMenuOpen" (click)="closeMobileMenu()">
+    <div class="mobile-nav-content glass-card" (click)="$event.stopPropagation()">
+      <div class="mobile-nav-header">
+        <div class="brand-section">
+          <div class="brand-icon">
+            <mat-icon>speed</mat-icon>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title gradient-text">TelematicsHQ</h1>
+          </div>
+        </div>
+        <button mat-icon-button (click)="closeMobileMenu()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="mobile-nav-links">
+        <a mat-button 
+           routerLink="/dashboard" 
+           routerLinkActive="active-nav-link"
+           class="mobile-nav-link"
+           (click)="closeMobileMenu()">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+        
+        <a mat-button 
+           routerLink="/submit-event" 
+           routerLinkActive="active-nav-link"
+           class="mobile-nav-link"
+           (click)="closeMobileMenu()">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Submit Event</span>
+        </a>
+      </div>
+      
+      <div class="mobile-nav-footer">
+        <div class="user-profile">
+          <div class="avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="user-info">
+            <span class="user-name">Fleet Manager</span>
+            <span class="user-role">Administrator</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

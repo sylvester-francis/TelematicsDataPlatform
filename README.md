@@ -239,8 +239,8 @@ ghcr.io/sylvester-francis/telematicsdataplatform/telematics-fullstack:latest
 ## 🎯 Getting Started for Development
 
 ### **Prerequisites**
-- Node.js 18+ (for Angular frontend)
-- .NET Core SDK (for backend development)
+- Node.js 20.19+ or 22.12+ (for Angular 18 frontend)
+- .NET Core SDK 8.0+ (for backend development)
 - Docker (for SQL Server database)
 - Git (for version control)
 

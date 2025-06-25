@@ -14,7 +14,7 @@ COPY telematics-ui/ ./
 RUN npm run build:prod
 
 # Stage 2: Build .NET Backend
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
 WORKDIR /src
 
 # Copy backend project files
@@ -32,7 +32,7 @@ RUN dotnet build "TelematicsApi.csproj" -c Release -o /app/build
 RUN dotnet publish "TelematicsApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 3: Production Runtime with nginx + .NET
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
 # Install nginx

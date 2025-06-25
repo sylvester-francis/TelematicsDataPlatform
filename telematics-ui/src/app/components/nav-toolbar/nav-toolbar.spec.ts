@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
 import { NavToolbar } from './nav-toolbar';
 
 describe('NavToolbar', () => {
@@ -8,7 +8,10 @@ describe('NavToolbar', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavToolbar]
+      imports: [NavToolbar],
+      providers: [
+        provideRouter([])
+      ]
     })
     .compileComponents();
 

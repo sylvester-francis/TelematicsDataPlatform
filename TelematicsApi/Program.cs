@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TelematicsCore.Interfaces;
 using TelematicsCore.Services;
 using TelematicsData;
@@ -17,7 +19,20 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configure JSON serialization for .NET 9.0 compatibility
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        
+        // Fix for .NET 9.0 PipeWriter compatibility
+        options.JsonSerializerOptions.WriteIndented = false;
+        options.JsonSerializerOptions.AllowTrailingCommas = true;
+        options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -43,6 +58,10 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITelematicsEventService, TelematicsEventService>();
 builder.Services.AddScoped<IDataEnrichmentService, DataEnrichmentService>();
 
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddDbContext<TelematicsDbContext>();
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
@@ -66,6 +85,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthorization();
+
+// Map health checks
+app.MapHealthChecks("/api/health");
+
 app.MapControllers();
 
 // Ensure database is created

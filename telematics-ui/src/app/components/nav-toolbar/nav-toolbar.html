@@ -1,4 +1,4 @@
-<nav class="modern-navbar glass-card">
+<nav class="modern-navbar">
   <div class="navbar-container">
     <!-- Brand Section -->
     <div class="brand-section">
@@ -48,72 +48,65 @@
       </button>
       
       <div class="user-profile">
-        <button mat-button class="profile-btn">
-          <div class="avatar">
+        <button mat-button class="profile-button">
+          <div class="profile-avatar">
             <mat-icon>person</mat-icon>
           </div>
-          <div class="user-info">
-            <span class="user-name">Fleet Manager</span>
-            <span class="user-role">Administrator</span>
+          <div class="profile-info">
+            <div class="profile-name">Fleet Manager</div>
+            <div class="profile-role">Administrator</div>
           </div>
-          <mat-icon class="dropdown-icon">expand_more</mat-icon>
+          <div class="profile-dropdown">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </div>
         </button>
       </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav-overlay" [class.show]="showMobileMenu" (click)="closeMobileMenu()"></div>
+  
+  <!-- Mobile Navigation Menu -->
+  <div class="mobile-nav-menu" [class.show]="showMobileMenu">
+    <div class="mobile-nav-header">
+      <h3 class="nav-title">Navigation</h3>
+      <button mat-icon-button class="close-btn" (click)="closeMobileMenu()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
     
-    <!-- Mobile Menu Toggle -->
-    <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-      <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
-    </button>
-  </div>
-  
-  <!-- Mobile Navigation Overlay -->
-  <div class="mobile-nav-overlay" [class.open]="mobileMenuOpen" (click)="closeMobileMenu()">
-    <div class="mobile-nav-content glass-card" (click)="$event.stopPropagation()">
-      <div class="mobile-nav-header">
-        <div class="brand-section">
-          <div class="brand-icon">
-            <mat-icon>speed</mat-icon>
-          </div>
-          <div class="brand-text">
-            <h1 class="brand-title gradient-text">TelematicsHQ</h1>
-          </div>
-        </div>
-        <button mat-icon-button (click)="closeMobileMenu()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
+    <div class="mobile-nav-links">
+      <a routerLink="/dashboard" 
+         routerLinkActive="active"
+         class="mobile-nav-link"
+         (click)="closeMobileMenu()">
+        <mat-icon>dashboard</mat-icon>
+        <span class="link-text">Dashboard</span>
+      </a>
       
-      <div class="mobile-nav-links">
-        <a mat-button 
-           routerLink="/dashboard" 
-           routerLinkActive="active-nav-link"
-           class="mobile-nav-link"
-           (click)="closeMobileMenu()">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
-        </a>
-        
-        <a mat-button 
-           routerLink="/submit-event" 
-           routerLinkActive="active-nav-link"
-           class="mobile-nav-link"
-           (click)="closeMobileMenu()">
-          <mat-icon>add_circle_outline</mat-icon>
-          <span>Submit Event</span>
-        </a>
+      <a routerLink="/submit-event" 
+         routerLinkActive="active"
+         class="mobile-nav-link"
+         (click)="closeMobileMenu()">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span class="link-text">Submit Event</span>
+      </a>
+    </div>
+    
+    <div class="mobile-nav-actions">
+      <div class="action-item">
+        <mat-icon>notifications_outlined</mat-icon>
+        <span class="action-text">Notifications</span>
       </div>
-      
-      <div class="mobile-nav-footer">
-        <div class="user-profile">
-          <div class="avatar">
-            <mat-icon>person</mat-icon>
-          </div>
-          <div class="user-info">
-            <span class="user-name">Fleet Manager</span>
-            <span class="user-role">Administrator</span>
-          </div>
-        </div>
+      <div class="action-item">
+        <mat-icon>settings_outlined</mat-icon>
+        <span class="action-text">Settings</span>
       </div>
     </div>
   </div>

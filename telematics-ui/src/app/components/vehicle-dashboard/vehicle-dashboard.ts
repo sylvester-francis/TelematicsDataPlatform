@@ -33,7 +33,7 @@ export class VehicleDashboard implements OnInit {
 
   constructor(
     private vehicleService: VehicleService,
-    private router: Router,
+    public router: Router,
     private snackBar: MatSnackBar
   ) {}
 
@@ -106,5 +106,9 @@ export class VehicleDashboard implements OnInit {
 
   getTotalAlerts(): number {
     return Object.values(this.vehicleStats).reduce((total, stats) => total + (stats.totalAlerts || 0), 0);
+  }
+
+  navigateToSubmitEvent(): void {
+    this.router.navigate(['/submit-event']);
   }
 }

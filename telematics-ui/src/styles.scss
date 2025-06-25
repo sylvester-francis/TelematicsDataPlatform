@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
 // Modern CSS Custom Properties for Professional Theme
@@ -107,18 +108,56 @@ body {
   }
 }
 
+// Material Icons Configuration
+.material-icons {
+  font-family: 'Material Icons' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+.mat-icon {
+  font-family: 'Material Icons' !important;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
 // Enhanced Material Design Components
 .mat-mdc-card {
   border-radius: var(--radius-xl) !important;
-  box-shadow: var(--shadow-lg) !important;
-  backdrop-filter: var(--backdrop-blur);
-  background: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2) !important;
   transition: all var(--transition-normal) !important;
   
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-xl) !important;
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+      0 16px 48px 0 rgba(31, 38, 135, 0.2),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -224,11 +263,23 @@ body {
 
 // Utility Classes
 .glass-card {
-  background: var(--glass-bg) !important;
-  backdrop-filter: var(--backdrop-blur) !important;
-  border: 1px solid var(--glass-border) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: var(--radius-xl) !important;
-  box-shadow: var(--shadow-lg) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2) !important;
+  transition: all var(--transition-normal) !important;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px 0 rgba(31, 38, 135, 0.2),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.3) !important;
+  }
 }
 
 .gradient-text {

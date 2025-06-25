@@ -1,339 +1,231 @@
 <div class="professional-dashboard">
-  <!-- Hero Section -->
-  <section class="hero-section animate-fade-in-up">
-    <div class="hero-content glass-card">
-      <div class="hero-text">
-        <h1 class="hero-title">
-          <span class="gradient-text">Fleet Operations</span>
-          <span class="highlight-text">Command Center</span>
-        </h1>
-        <p class="hero-subtitle">
-          Real-time monitoring and analytics for your entire fleet ecosystem
-        </p>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat-item animate-pulse">
-          <div class="stat-icon">
+  <div class="dashboard-layout">
+    
+    <!-- Dashboard Header -->
+    <div class="dashboard-header animate-fade-in-up">
+      <h1 class="page-title">Fleet Operations Center</h1>
+      <p class="page-subtitle">Real-time monitoring and analytics for your entire fleet ecosystem</p>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-overview animate-slide-in-right">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon vehicles">
             <mat-icon>directions_car</mat-icon>
           </div>
-          <div class="stat-content">
-            <span class="stat-number">{{vehicles.length}}</span>
-            <span class="stat-label">Active Vehicles</span>
-          </div>
+          <div class="stat-trend positive">+12%</div>
         </div>
-        <div class="hero-stat-item animate-pulse">
-          <div class="stat-icon">
+        <div class="stat-value">{{vehicles.length}}</div>
+        <div class="stat-label">Active Vehicles</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon events">
             <mat-icon>analytics</mat-icon>
           </div>
-          <div class="stat-content">
-            <span class="stat-number">{{getTotalEvents()}}</span>
-            <span class="stat-label">Total Events</span>
-          </div>
+          <div class="stat-trend positive">+8%</div>
         </div>
-        <div class="hero-stat-item animate-pulse">
-          <div class="stat-icon">
+        <div class="stat-value">{{getTotalEvents()}}</div>
+        <div class="stat-label">Total Events</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon alerts">
             <mat-icon>warning</mat-icon>
           </div>
-          <div class="stat-content">
-            <span class="stat-number">{{getTotalAlerts()}}</span>
-            <span class="stat-label">Active Alerts</span>
-          </div>
+          <div class="stat-trend neutral">0%</div>
         </div>
+        <div class="stat-value">{{getTotalAlerts()}}</div>
+        <div class="stat-label">Active Alerts</div>
       </div>
     </div>
-  </section>
 
-  <!-- Loading State -->
-  <div *ngIf="loading" class="premium-loading">
-    <div class="loading-content glass-card">
-      <div class="loading-spinner">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-      </div>
-      <h3 class="loading-title">Synchronizing Fleet Data</h3>
-      <p class="loading-subtitle">Establishing secure connections to vehicle telemetry systems...</p>
-      <div class="loading-progress">
-        <div class="progress-bar"></div>
-      </div>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state animate-fade-in-up">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading Fleet Data</div>
+      <div class="loading-subtext">Connecting to vehicle telemetry systems...</div>
     </div>
-  </div>
 
-  <!-- Empty State -->
-  <div *ngIf="!loading && vehicles.length === 0" class="premium-empty-state animate-fade-in-up">
-    <div class="empty-content glass-card">
-      <div class="empty-illustration">
-        <div class="floating-icon animate-float">
-          <mat-icon>directions_car_filled</mat-icon>
-        </div>
-        <div class="floating-dots">
-          <div class="dot dot-1"></div>
-          <div class="dot dot-2"></div>
-          <div class="dot dot-3"></div>
-        </div>
+    <!-- Empty State -->
+    <div *ngIf="!loading && vehicles.length === 0" class="empty-state animate-fade-in-up">
+      <div class="empty-icon">
+        <mat-icon>directions_car</mat-icon>
       </div>
-      <h2 class="empty-title gradient-text">Fleet Awaiting Connection</h2>
+      <h2 class="empty-title">No Vehicles Found</h2>
       <p class="empty-message">
-        Your fleet management system is ready. Connect your first vehicle to begin 
-        monitoring real-time telemetry data and analytics.
+        Your fleet management system is ready. Add your first vehicle to begin monitoring telemetry data.
       </p>
       <div class="empty-actions">
-        <button mat-raised-button class="primary-action" (click)="retryLoadVehicles()">
+        <button mat-raised-button class="action-btn" color="primary" (click)="retryLoadVehicles()">
           <mat-icon>refresh</mat-icon>
           <span>Refresh Data</span>
         </button>
-        <button mat-outlined-button class="secondary-action" routerLink="/submit-event">
-          <mat-icon>add_circle_outline</mat-icon>
+        <button mat-button class="action-btn" routerLink="/submit-event">
+          <mat-icon>add</mat-icon>
           <span>Add Test Data</span>
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- Main Content -->
-  <div *ngIf="!loading && vehicles.length > 0" class="dashboard-main">
-    <!-- Quick Actions Bar -->
-    <section class="quick-actions animate-slide-in-right">
-      <div class="actions-container glass-card">
-        <div class="section-header">
-          <h3 class="section-title">Quick Actions</h3>
-          <p class="section-subtitle">Streamlined fleet management tools</p>
-        </div>
+    <!-- Main Content -->
+    <div *ngIf="!loading && vehicles.length > 0">
+      
+      <!-- Quick Actions -->
+      <div class="quick-actions animate-slide-in-right">
+        <h2 class="section-title">Quick Actions</h2>
         <div class="actions-grid">
-          <button mat-button class="action-card" routerLink="/submit-event">
-            <div class="action-icon">
-              <mat-icon>add_circle_outline</mat-icon>
+          <div class="action-card" (click)="navigateToSubmitEvent()">
+            <div class="action-icon submit">
+              <mat-icon class="submit">add_circle_outline</mat-icon>
             </div>
             <div class="action-content">
-              <span class="action-title">Submit Event</span>
-              <span class="action-desc">Add telemetry data</span>
+              <div class="action-title">Submit Event</div>
+              <div class="action-description">Add telemetry data</div>
             </div>
-          </button>
+          </div>
           
-          <button mat-button class="action-card" (click)="refreshData()">
-            <div class="action-icon">
-              <mat-icon>refresh</mat-icon>
+          <div class="action-card" (click)="refreshData()">
+            <div class="action-icon refresh">
+              <mat-icon class="refresh">refresh</mat-icon>
             </div>
             <div class="action-content">
-              <span class="action-title">Refresh Data</span>
-              <span class="action-desc">Update fleet status</span>
+              <div class="action-title">Refresh Data</div>
+              <div class="action-description">Update fleet status</div>
             </div>
-          </button>
+          </div>
           
-          <button mat-button class="action-card">
-            <div class="action-icon">
-              <mat-icon>file_download</mat-icon>
+          <div class="action-card">
+            <div class="action-icon export">
+              <mat-icon class="export">file_download</mat-icon>
             </div>
             <div class="action-content">
-              <span class="action-title">Export Report</span>
-              <span class="action-desc">Download analytics</span>
+              <div class="action-title">Export Report</div>
+              <div class="action-description">Download analytics</div>
             </div>
-          </button>
+          </div>
           
-          <button mat-button class="action-card">
-            <div class="action-icon">
-              <mat-icon>settings</mat-icon>
+          <div class="action-card">
+            <div class="action-icon settings">
+              <mat-icon class="settings">settings</mat-icon>
             </div>
             <div class="action-content">
-              <span class="action-title">Fleet Settings</span>
-              <span class="action-desc">Configure parameters</span>
+              <div class="action-title">Fleet Settings</div>
+              <div class="action-description">Configure parameters</div>
             </div>
-          </button>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Advanced Vehicle Table -->
-    <section class="vehicle-table-section animate-fade-in-up">
-      <div class="table-container glass-card">
-        <div class="table-header">
+      <!-- Vehicle Table -->
+      <div class="vehicle-table-section animate-fade-in-up">
+        <div class="section-header">
           <div class="header-content">
-            <h3 class="table-title">Vehicle Fleet Overview</h3>
-            <p class="table-subtitle">Real-time status and performance metrics</p>
+            <h2 class="section-title">Vehicle Fleet Overview</h2>
+            <p class="section-subtitle">Real-time status and performance metrics</p>
           </div>
           <div class="table-controls">
-            <button mat-icon-button class="control-btn" title="Filter">
+            <button mat-button class="control-btn">
               <mat-icon>filter_list</mat-icon>
+              <span>Filter</span>
             </button>
-            <button mat-icon-button class="control-btn" title="Sort">
+            <button mat-button class="control-btn">
               <mat-icon>sort</mat-icon>
+              <span>Sort</span>
             </button>
-            <button mat-icon-button class="control-btn" title="More options">
+            <button mat-icon-button class="control-btn">
               <mat-icon>more_vert</mat-icon>
             </button>
           </div>
         </div>
         
-        <div class="table-wrapper">
-          <table mat-table [dataSource]="vehicles" class="premium-table">
+        <div class="table-container">
+          <table mat-table [dataSource]="vehicles">
             
+            <!-- Status Column -->
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let vehicle">
+              <td mat-cell *matCellDef="let vehicle" class="status-cell">
                 <div class="status-indicator">
-                  <div class="status-dot active"></div>
+                  <div class="status-dot"></div>
                   <span class="status-text">Active</span>
                 </div>
               </td>
             </ng-container>
 
+            <!-- Vehicle Information Column -->
             <ng-container matColumnDef="vehicle">
               <th mat-header-cell *matHeaderCellDef>Vehicle Information</th>
-              <td mat-cell *matCellDef="let vehicle">
+              <td mat-cell *matCellDef="let vehicle" class="vehicle-cell">
                 <div class="vehicle-info">
-                  <div class="vehicle-avatar">
-                    <mat-icon>directions_car</mat-icon>
-                  </div>
-                  <div class="vehicle-details">
-                    <div class="vehicle-id">{{vehicle.vehicleIdentifier}}</div>
-                    <div class="vehicle-model">{{vehicle.make}} {{vehicle.model}} ({{vehicle.year}})</div>
-                  </div>
+                  <div class="vehicle-id">{{vehicle.vehicleIdentifier}}</div>
+                  <div class="vehicle-details">{{vehicle.make}} {{vehicle.model}} ({{vehicle.year}})</div>
                 </div>
               </td>
             </ng-container>
 
+            <!-- Performance Metrics Column -->
             <ng-container matColumnDef="metrics">
               <th mat-header-cell *matHeaderCellDef>Performance Metrics</th>
-              <td mat-cell *matCellDef="let vehicle">
-                <div class="metrics-grid">
+              <td mat-cell *matCellDef="let vehicle" class="metrics-cell">
+                <div class="metrics-grid" *ngIf="getStats(vehicle.vehicleIdentifier) as stats">
                   <div class="metric-item">
-                    <span class="metric-value">{{getStats(vehicle.vehicleIdentifier)?.totalEvents || 0}}</span>
-                    <span class="metric-label">Events</span>
+                    <div class="metric-value">{{stats.totalEvents}}</div>
+                    <div class="metric-label">Events</div>
                   </div>
                   <div class="metric-item">
-                    <span class="metric-value">{{getStats(vehicle.vehicleIdentifier)?.activeTrips || 0}}</span>
-                    <span class="metric-label">Trips</span>
+                    <div class="metric-value">{{stats.totalAlerts}}</div>
+                    <div class="metric-label">Alerts</div>
                   </div>
                   <div class="metric-item">
-                    <span class="metric-value">{{getStats(vehicle.vehicleIdentifier)?.totalAlerts || 0}}</span>
-                    <span class="metric-label">Alerts</span>
+                    <div class="metric-value">{{stats.lastKnownSpeed || 0}}</div>
+                    <div class="metric-label">Speed</div>
                   </div>
                 </div>
               </td>
             </ng-container>
 
+            <!-- Last Activity Column -->
             <ng-container matColumnDef="lastActivity">
               <th mat-header-cell *matHeaderCellDef>Last Activity</th>
               <td mat-cell *matCellDef="let vehicle">
-                <div class="activity-info">
-                  <div class="activity-time">{{formatDateTime(getStats(vehicle.vehicleIdentifier)?.lastEventTime)}}</div>
-                  <div class="activity-speed" *ngIf="getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed">
-                    {{getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed}} km/h
-                  </div>
+                <div *ngIf="getStats(vehicle.vehicleIdentifier) as stats">
+                  {{formatDateTime(stats.lastEventTime)}}
                 </div>
               </td>
             </ng-container>
 
+            <!-- Actions Column -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let vehicle">
+              <td mat-cell *matCellDef="let vehicle" class="actions-cell">
                 <div class="action-buttons">
-                  <button mat-icon-button 
-                          class="action-btn primary" 
+                  <button mat-icon-button class="action-btn" 
                           (click)="viewVehicleDetails(vehicle.vehicleIdentifier)"
                           title="View Details">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button 
-                          class="action-btn secondary" 
-                          title="Edit Vehicle">
+                  <button mat-icon-button class="action-btn" title="Edit">
                     <mat-icon>edit</mat-icon>
                   </button>
-                  <button mat-icon-button 
-                          class="action-btn tertiary" 
-                          title="More Options">
+                  <button mat-icon-button class="action-btn" title="More Options">
                     <mat-icon>more_vert</mat-icon>
                   </button>
                 </div>
               </td>
             </ng-container>
 
+            <!-- Table Structure -->
             <tr mat-header-row *matHeaderRowDef="enhancedDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: enhancedDisplayedColumns;"></tr>
+            <tr mat-row *matRowDef="let vehicle; columns: enhancedDisplayedColumns;"
+                (click)="viewVehicleDetails(vehicle.vehicleIdentifier)"
+                style="cursor: pointer;"></tr>
           </table>
         </div>
       </div>
-    </section>
-
-    <!-- Enhanced Stats Grid -->
-    <section class="stats-section animate-fade-in-up">
-      <div class="section-header">
-        <h3 class="section-title gradient-text">Vehicle Analytics</h3>
-        <p class="section-subtitle">Detailed performance insights for each vehicle</p>
-      </div>
-      
-      <div class="premium-stats-grid">
-        <div *ngFor="let vehicle of vehicles; let i = index" 
-             class="premium-stat-card glass-card animate-fade-in-up"
-             [style.animation-delay.ms]="i * 100">
-          
-          <div class="card-header">
-            <div class="vehicle-identity">
-              <div class="vehicle-icon">
-                <mat-icon>directions_car</mat-icon>
-              </div>
-              <div class="vehicle-name">
-                <h4 class="vehicle-id">{{vehicle.vehicleIdentifier}}</h4>
-                <p class="vehicle-model">{{vehicle.make}} {{vehicle.model}}</p>
-              </div>
-            </div>
-            <div class="status-badge active">
-              <span>Active</span>
-            </div>
-          </div>
-          
-          <div class="card-content">
-            <div class="primary-stats">
-              <div class="primary-stat">
-                <div class="stat-icon events">
-                  <mat-icon>analytics</mat-icon>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-number">{{getStats(vehicle.vehicleIdentifier)?.totalEvents || 0}}</span>
-                  <span class="stat-label">Total Events</span>
-                </div>
-              </div>
-              
-              <div class="primary-stat">
-                <div class="stat-icon trips">
-                  <mat-icon>route</mat-icon>
-                </div>
-                <div class="stat-info">
-                  <span class="stat-number">{{getStats(vehicle.vehicleIdentifier)?.activeTrips || 0}}</span>
-                  <span class="stat-label">Active Trips</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="secondary-stats">
-              <div class="secondary-stat">
-                <span class="label">Alerts</span>
-                <span class="value">{{getStats(vehicle.vehicleIdentifier)?.totalAlerts || 0}}</span>
-              </div>
-              <div class="secondary-stat" *ngIf="getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed">
-                <span class="label">Last Speed</span>
-                <span class="value">{{getStats(vehicle.vehicleIdentifier)?.lastKnownSpeed}} km/h</span>
-              </div>
-              <div class="secondary-stat">
-                <span class="label">Year</span>
-                <span class="value">{{vehicle.year}}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card-footer">
-            <button mat-button class="details-btn" (click)="viewVehicleDetails(vehicle.vehicleIdentifier)">
-              <span>View Analytics</span>
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
   </div>
-
-  <!-- Floating Action Button -->
-  <button mat-fab class="floating-action" routerLink="/submit-event" title="Submit Event">
-    <mat-icon>add</mat-icon>
-  </button>
 </div>
